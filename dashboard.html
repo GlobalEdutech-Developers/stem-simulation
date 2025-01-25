@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stem Simulations</title>
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            height: 100vh;
+            background-color: #f4f4f9;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        /* Full-Screen Background Image */
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/images/dashboard.png.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(76, 175, 80, 0.8); 
+            padding: 15px 20px;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .navbar .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: white;
+            flex: 1;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            flex: 2;
+            justify-content: space-evenly;
+            flex-wrap: wrap; /* Allow wrap on small screens */
+        }
+
+        .navbar ul li {
+            margin: 0 10px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            color: #e6ffe6;
+        }
+
+        .language-dropdown {
+            flex: 1;
+            text-align: right;
+        }
+
+        .language-dropdown select {
+            padding: 7px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+        }
+
+        /* Content Section */
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .content h1 {
+            color: #ffffff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            width: 300px;
+            padding: 25px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .card p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .card button {
+            background-color: #357a38;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card button:hover {
+            background-color: #357a38;
+        }
+
+        .language-dropdown select,
+.logout-button {
+    height: 40px; /* Set a consistent height */
+    padding: 0 15px; /* Add padding for consistent spacing */
+    font-size: 1em;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.language-dropdown {
+    flex: 1;
+    text-align: right;
+}
+
+.logout-button {
+    background-color: #d32f2f;
+    color: white;
+    cursor: pointer;
+    margin-left: 20px; /* Add space from dropdown */
+}
+
+.language-dropdown select {
+    width: 180px; /* Ensure dropdown has fixed width */
+}
+
+/* .logout-button:hover,
+.language-dropdown select:hover {
+    background-color: #c62828;
+} */
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .navbar ul {
+                gap: 20px;
+            }
+
+            .card {
+                width: 270px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .navbar ul {
+                display: block;
+                text-align: center;
+            }
+
+            .cards-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .language-dropdown {
+                margin-top: 15px;
+            }
+
+            .content h1 {
+                font-size: 2.2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar ul li {
+                font-size: 0.9em;
+                margin: 8px 0;
+            }
+
+            .logo {
+                font-size: 1.6em;
+            }
+
+            .card {
+                width: 90%;
+            }
+
+            .language-dropdown {
+                margin-top: 15px;
+            }
+
+            .cards-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content h1 {
+                font-size: 2em;
+            }
+
+            .card {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .navbar .logo img {
+                height: 30px;
+                margin-bottom: 10px;
+            }
+
+            .logout-button {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .language-dropdown {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Full-Screen Background Image -->
+    <div class="background-image"></div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <!-- Logo in Navbar -->
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="Logo" style="height: 40px; margin-right: 10px;">
+        </div>
+        <ul>
+            <li><a href="#" id="physics">Physics</a></li>
+            <li><a href="#" id="chemistry">Chemistry</a></li>
+            <li><a href="#" id="biology">Biology</a></li>
+            <li><a href="#" id="earth">Earth & Space</a></li>
+            <li><a href="#" id="math">Math & Statistics</a></li>
+        </ul>
+        <div class="language-dropdown">
+            <select id="languageSelect">
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="marathi">Marathi</option>
+            </select>
+        </div>
+        <!-- Logout Button -->
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        <h1>Welcome to the Simulations</h1>
+        <div class="cards-container" id="cardsContainer"></div>
+    </div>
+
+    <script>
+        // Simulation Data in Multiple Languages
+        const simulationData = {
+            english: {
+                Physics: ["Learn the basics of Physics", "Build on your knowledge of Physics", "Master advanced concepts of Physics"],
+                Chemistry: ["Learn the basics of Chemistry", "Build on your knowledge of Chemistry", "Master advanced concepts of Chemistry"],
+                Biology: ["Learn the basics of Biology", "Build on your knowledge of Biology", "Master advanced concepts of Biology"],
+                Earth: ["Learn the basics of Earth & Space", "Build on your knowledge of Earth & Space", "Master advanced concepts of Earth & Space"],
+                Math: ["Learn the basics of Math & Statistics", "Build on your knowledge of Math & Statistics", "Master advanced concepts of Math & Statistics"],
+            },
+            hindi: {
+                Physics: ["भौतिकी की मूल बातें सीखें", "भौतिकी का ज्ञान बढ़ाएं", "भौतिकी की उन्नत अवधारणाओं को मास्टर करें"],
+                Chemistry: ["रसायन विज्ञान की मूल बातें सीखें", "रसायन विज्ञान का ज्ञान बढ़ाएं", "रसायन विज्ञान की उन्नत अवधारणाओं को मास्टर करें"],
+                Biology: ["जीवविज्ञान की मूल बातें सीखें", "जीवविज्ञान का ज्ञान बढ़ाएं", "जीवविज्ञान की उन्नत अवधारणाओं को मास्टर करें"],
+                Earth: ["पृथ्वी और अंतरिक्ष की मूल बातें सीखें", "पृथ्वी और अंतरिक्ष का ज्ञान बढ़ाएं", "पृथ्वी और अंतरिक्ष की उन्नत अवधारणाओं को मास्टर करें"],
+                Math: ["गणित और सांख्यिकी की मूल बातें सीखें", "गणित और सांख्यिकी का ज्ञान बढ़ाएं", "गणित और सांख्यिकी की उन्नत अवधारणाओं को मास्टर करें"],
+            },
+            marathi: {
+                Physics: ["भौतिकशास्त्राची मूलतत्त्वे शिका", "भौतिकशास्त्राचे ज्ञान वाढवा", "भौतिकशास्त्रातील प्रगत संकल्पना आत्मसात करा"],
+                Chemistry: ["रसायनशास्त्राची मूलतत्त्वे शिका", "रसायनशास्त्राचे ज्ञान वाढवा", "रसायनशास्त्रातील प्रगत संकल्पना आत्मसात करा"],
+                Biology: ["जीवशास्त्राची मूलतत्त्वे शिका", "जीवशास्त्राचे ज्ञान वाढवा", "जीवशास्त्रातील प्रगत संकल्पना आत्मसात करा"],
+                Earth: ["पृथ्वी आणि अवकाशाची मूलतत्त्वे शिका", "पृथ्वी आणि अवकाशाचे ज्ञान वाढवा", "पृथ्वी आणि अवकाशातील प्रगत संकल्पना आत्मसात करा"],
+                Math: ["गणित आणि सांख्यिकीची मूलतत्त्वे शिका", "गणित आणि सांख्यिकाचे ज्ञान वाढवा", "गणित आणि सांख्यिकातील प्रगत संकल्पना आत्मसात करा"],
+            }
+        };
+
+        // DOM Elements
+        const languageSelect = document.getElementById('languageSelect');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const subjectLinks = document.querySelectorAll('.navbar ul li a');
+
+        // Function to Show Cards Based on the Selected Language
+        function showCards(subject, language) {
+            const descriptions = simulationData[language][subject];
+            cardsContainer.innerHTML = `  
+                <div class="card">
+                    <h2>Elementary Level</h2>
+                    <p>${descriptions[0]}</p>
+                    <button onclick="redirectToContentPage('${subject}', 'elementary', '${language}')">${subject} Elementary</button>
+                </div>
+                <div class="card">
+                    <h2>Middle Level</h2>
+                    <p>${descriptions[1]}</p>
+                    <button onclick="redirectToContentPage('${subject}', 'middle', '${language}')">${subject} Middle</button>
+                </div>
+                <div class="card">
+                    <h2>High Level</h2>
+                    <p>${descriptions[2]}</p>
+                    <button onclick="redirectToContentPage('${subject}', 'high', '${language}')">${subject} High</button>
+                </div>`; 
+        }
+
+        // Function to Redirect to Content Page
+        function redirectToContentPage(subject, level, language) {
+            window.location.href = `content.html?subject=${subject}&level=${level}&language=${language}`;
+        }
+
+        // Event Listener for Language Dropdown
+        languageSelect.addEventListener("change", () => {
+            const language = languageSelect.value;
+            // Store the selected language in sessionStorage
+            sessionStorage.setItem('selectedLanguage', language);
+
+            const activeSubjectLink = document.querySelector(".navbar ul li a.active");
+            if (activeSubjectLink) {
+                const subject = activeSubjectLink.id.charAt(0).toUpperCase() + activeSubjectLink.id.slice(1);
+                showCards(subject, language);
+            }
+        });
+
+        // Event Listeners for Subjects
+        subjectLinks.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+                const subject = link.id.charAt(0).toUpperCase() + link.id.slice(1);
+                const language = sessionStorage.getItem('selectedLanguage') || languageSelect.value;
+                showCards(subject, language);
+            });
+        });
+
+        // Function to Logout
+        function logout() {
+            alert("You have logged out successfully.");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+
+        // Default View on Page Load
+        window.onload = () => {
+            const savedLanguage = sessionStorage.getItem('selectedLanguage') || "english";
+            languageSelect.value = savedLanguage;
+            const defaultSubject = "Physics"; // Default subject
+            showCards(defaultSubject, savedLanguage);
+        };
+    </script>
+</body>
+</html>

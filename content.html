@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stem-Simulation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #28a745; /* Green color */
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .topic-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .topic-card {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: scale(1.05);
+            background-color: #e6f9e6; /* Light green background */
+            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.15);
+            border-color: #28a745; /* Green border */
+        }
+
+        .topic-card h3 {
+            color: #333; /* Green title color */
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+        }
+
+        .topic-card .start-btn {
+            background-color: #357a38; /* Green button color */
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .topic-card .start-btn:hover {
+            background-color: #357a38; /* Darker green for hover effect */
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .topic-container {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="levelTitle">Topics for Physics</h1>
+
+    <div class="topic-container" id="topicDiv">
+        <!-- Dynamic content will be inserted here -->
+    </div>
+
+    <script>
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js').then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+
+        // Extract URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const subject = urlParams.get('subject') || 'Physics';
+        const level = urlParams.get('level') || 'middle'; // Default to middle level
+        const language = urlParams.get('language') || 'english';
+
+        const simulationLinks = {
+            english: {
+                Physics: {
+                    elementary: {
+                        magnetsElectromagnets: "https://phet.colorado.edu/sims/html/magnets-and-electromagnets/latest/magnets-and-electromagnets_en.html",
+                        magnetCompass: "https://phet.colorado.edu/sims/html/magnet-and-compass/latest/magnet-and-compass_en.html",
+                        mySolarSystem: "https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_en.html",
+                        geometricOptics: "https://phet.colorado.edu/sims/html/geometric-optics/latest/geometric-optics_en.html",
+                        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+                        gravityForceLab: "https://phet.colorado.edu/sims/html/gravity-force-lab-basics/latest/gravity-force-lab-basics_en.html",
+                        wavesIntro: "https://phet.colorado.edu/sims/html/waves-intro/latest/waves-intro_en.html",
+                        gasesIntro: "https://phet.colorado.edu/sims/html/gases-intro/latest/gases-intro_en.html",
+                        massesSprings: "https://phet.colorado.edu/sims/html/masses-and-springs-basics/latest/masses-and-springs-basics_en.html",
+                        energyFormsChanges: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
+                        waveInterference: "https://phet.colorado.edu/sims/html/wave-interference/latest/wave-interference_en.html",
+                        circuitLab: "https://phet.colorado.edu/sims/html/circuit-construction-kit-dc-virtual-lab/latest/circuit-construction-kit-dc-virtual-lab_en.html",
+                        circuitKit: "https://phet.colorado.edu/sims/html/circuit-construction-kit-dc/latest/circuit-construction-kit-dc_en.html",
+                        pendulumLab: "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_en.html",
+                        projectileMotion: "https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html",
+                        statesMatter: "https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html",
+                        gravityOrbits: "https://phet.colorado.edu/sims/html/gravity-and-orbits/latest/gravity-and-orbits_en.html",
+                        bendingLight: "https://phet.colorado.edu/sims/html/bending-light/latest/bending-light_en.html",
+                        energySkatePark: "https://phet.colorado.edu/sims/html/energy-skate-park-basics/latest/energy-skate-park-basics_en.html",
+                        colorVision: "https://phet.colorado.edu/sims/html/color-vision/latest/color-vision_en.html",
+                        balancingAct: "https://phet.colorado.edu/sims/html/balancing-act/latest/balancing-act_en.html",
+                        friction: "https://phet.colorado.edu/sims/html/friction/latest/friction_en.html",
+                        forcesMotion: "https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html",
+                        johnTravoltage: "https://phet.colorado.edu/sims/html/john-travoltage/latest/john-travoltage_en.html",
+                        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html"
+                    },
+
+                    middle: {
+                        generator: "https://phet.colorado.edu/sims/html/generator/latest/generator_en.html",
+                        magnetsElectromagnets: "https://phet.colorado.edu/sims/html/magnets-and-electromagnets/latest/magnets-and-electromagnets_en.html",
+                        magnetCompass: "https://phet.colorado.edu/sims/html/magnet-and-compass/latest/magnet-and-compass_en.html",
+                        faradayElectromagneticLab: "https://phet.colorado.edu/sims/html/faradays-electromagnetic-lab/latest/faradays-electromagnetic-lab_en.html",
+                        mySolarSystem: "https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_en.html",
+                        geometricOpticsBasics: "https://phet.colorado.edu/sims/html/geometric-optics/latest/geometric-optics_en.html",
+                        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+                        collisionLab: "https://phet.colorado.edu/sims/html/collision-lab/latest/collision-lab_en.html",
+                        gravityForceLab: "https://phet.colorado.edu/sims/html/gravity-force-lab-basics/latest/gravity-force-lab-basics_en.html",
+                        wavesIntro: "https://phet.colorado.edu/sims/html/waves-intro/latest/waves-intro_en.html",
+                        diffusion: "https://phet.colorado.edu/sims/html/diffusion/latest/diffusion_en.html",
+                        gasesIntro: "https://phet.colorado.edu/sims/html/gases-intro/latest/gases-intro_en.html",
+                        blackbodySpectrum: "https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_en.html",
+                        massesSprings: "https://phet.colorado.edu/sims/html/masses-and-springs-basics/latest/masses-and-springs-basics_en.html",
+                        energyFormsChanges: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
+                        waveInterference: "https://phet.colorado.edu/sims/html/wave-interference/latest/wave-interference_en.html",
+                        capacitorLab: "https://phet.colorado.edu/sims/html/capacitor-lab-basics/latest/capacitor-lab-basics_en.html",
+                        circuitLab: "https://phet.colorado.edu/sims/html/circuit-construction-kit-dc-virtual-lab/latest/circuit-construction-kit-dc-virtual-lab_en.html",
+                        pendulumLab: "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_en.html",
+                        projectileMotion: "https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html",
+                        plinkoProbability: "https://phet.colorado.edu/sims/html/plinko-probability/latest/plinko-probability_en.html",
+                        chargesFields: "https://phet.colorado.edu/sims/html/charges-and-fields/latest/charges-and-fields_en.html",
+                        bendingLight: "https://phet.colorado.edu/sims/html/bending-light/latest/bending-light_en.html",
+                        moleculesLight: "https://phet.colorado.edu/sims/html/molecules-and-light/latest/molecules-and-light_en.html",
+                        energySkatePark: "https://phet.colorado.edu/sims/html/energy-skate-park-basics/latest/energy-skate-park-basics_en.html",
+                        faradaysLaw: "https://phet.colorado.edu/sims/html/faradays-law/latest/faradays-law_en.html",
+                        waveOnString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+                        ohmsLaw: "https://phet.colorado.edu/sims/html/ohms-law/latest/ohms-law_en.html",
+                        resistanceWire: "https://phet.colorado.edu/sims/html/resistance-in-a-wire/latest/resistance-in-a-wire_en.html",
+                        buildAtom: "https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html"
+                    },
+
+                    high: {
+                        buoyancyBasics: "https://phet.colorado.edu/sims/html/buoyancy/latest/buoyancy-basics_en.html",
+                        buoyancy: "https://phet.colorado.edu/sims/html/buoyancy/latest/buoyancy_en.html",
+                        generator: "https://phet.colorado.edu/sims/html/generator/latest/generator_en.html",
+                        magnetsElectromagnets: "https://phet.colorado.edu/sims/html/magnets-and-electromagnets/latest/magnets-and-electromagnets_en.html",
+                        magnetCompass: "https://phet.colorado.edu/sims/html/magnet-and-compass/latest/magnet-and-compass_en.html",
+                        faradayElectromagneticLab: "https://phet.colorado.edu/sims/html/faradays-electromagnetic-lab/latest/faradays-electromagnetic-lab_en.html",
+                        projectileDataLab: "https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html",
+                        buildNucleus: "https://phet.colorado.edu/sims/html/build-a-nucleus/latest/build-a-nucleus_en.html",
+                        keplersLaws: "https://phet.colorado.edu/sims/html/kepler/latest/keplers-laws_en.html",
+                        soundWaves: "https://phet.colorado.edu/sims/html/sound/latest/sound_en.html",
+                        mySolarSystem: "https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_en.html",
+                        calculusGrapher: "https://phet.colorado.edu/sims/html/calculus-grapher/latest/calculus-grapher_en.html",
+                        geometricOptics: "https://phet.colorado.edu/sims/html/geometric-optics/latest/geometric-optics_en.html",
+                        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+                        circuitKitAC: "https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_en.html",
+                        circuitKitACVirtual: "https://phet.colorado.edu/sims/html/circuit-construction-kit-ac-virtual/latest/circuit-construction-kit-ac-virtual-lab_en.html",
+                        normalModes: "https://phet.colorado.edu/sims/html/normal-modes/latest/normal-modes_en.html",
+                        fourierMakingWaves: "https://phet.colorado.edu/sims/html/fourier-making-waves/latest/fourier-making-waves_en.html",
+                        collisionLab: "https://phet.colorado.edu/sims/html/collision-lab/latest/collision-lab_en.html",
+                        energySkatePark: "https://phet.colorado.edu/sims/html/energy-skate-park/latest/energy-skate-park_en.html",
+                        vectorAddition: "https://phet.colorado.edu/sims/html/vector-addition/latest/vector-addition_en.html",
+                        diffusion: "https://phet.colorado.edu/sims/html/diffusion/latest/diffusion_en.html",
+                        gasProperties: "https://phet.colorado.edu/sims/html/gas-properties/latest/gas-properties_en.html",
+                        coulombsLaw: "https://phet.colorado.edu/sims/html/coulombs-law/latest/coulombs-law_en.html",
+                        massesSprings: "https://phet.colorado.edu/sims/html/masses-and-springs/latest/masses-and-springs_en.html",
+                        capacitorLab: "https://phet.colorado.edu/sims/html/capacitor-lab/latest/capacitor-lab_en.html",
+                        plinkoProbability: "https://phet.colorado.edu/sims/html/plinko-probability/latest/plinko-probability_en.html",
+                        chargesFields: "https://phet.colorado.edu/sims/html/charges-and-fields/latest/charges-and-fields_en.html",
+                        rutherfordScattering: "https://phet.colorado.edu/sims/html/rutherford-scattering/latest/rutherford-scattering_en.html",
+                        bendingLight: "https://phet.colorado.edu/sims/html/bending-light/latest/bending-light_en.html",
+                        hookesLaw: "https://phet.colorado.edu/sims/html/hookes-law/latest/hookes-law_en.html",
+                        moleculesLight: "https://phet.colorado.edu/sims/html/molecules-and-light/latest/molecules-and-light_en.html",
+                        waveOnString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+                        ohmsLaw: "https://phet.colorado.edu/sims/html/ohms-law/latest/ohms-law_en.html",
+                        resistanceWire: "https://phet.colorado.edu/sims/html/resistance-in-a-wire/latest/resistance-in-a-wire_en.html",
+                        buildAtom: "https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html"
+                    },
+                
+                },
+                Chemistry: {
+                    elementary: {
+                        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+                        gasesIntro: "https://phet.colorado.edu/sims/html/gases-intro/latest/gases-intro_en.html",
+                        energyFormsChanges: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
+                        statesMatterBasics: "https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html",
+                        concentration: "https://phet.colorado.edu/sims/html/concentration/latest/concentration_en.html",
+                        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html"
+                    },
+                    middle: {
+                        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+                        buildMolecule: "https://phet.colorado.edu/sims/html/build-a-molecule/latest/build-a-molecule_en.html",
+                        diffusion: "https://phet.colorado.edu/sims/html/diffusion/latest/diffusion_en.html",
+                        gasesIntro: "https://phet.colorado.edu/sims/html/gases-intro/latest/gases-intro_en.html",
+                        blackbodySpectrum: "https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_en.html",
+                        energyFormsChanges: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
+                        statesMatterBasics: "https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html",
+                        isotopesAtomicMass: "https://phet.colorado.edu/sims/html/isotopes-and-atomic-mass/latest/isotopes-and-atomic-mass_en.html",
+                        moleculesLight: "https://phet.colorado.edu/sims/html/molecules-and-light/latest/molecules-and-light_en.html",
+                        moleculeShapesBasics: "https://phet.colorado.edu/sims/html/molecule-shapes-basics/latest/molecule-shapes-basics_en.html",
+                        reactantsProductsLeftovers: "https://phet.colorado.edu/sims/html/reactants-products-and-leftovers/latest/reactants-products-and-leftovers_en.html",
+                        phScaleBasics: "https://phet.colorado.edu/sims/html/ph-scale-basics/latest/ph-scale-basics_en.html",
+                        waveString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+                        phScale: "https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html",
+                        balancingEquations: "https://phet.colorado.edu/sims/html/balancing-chemical-equations/latest/balancing-chemical-equations_en.html",
+                        concentration: "https://phet.colorado.edu/sims/html/concentration/latest/concentration_en.html",
+                        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html",
+                        buildAtom: "https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html"
+                    },
+                    high: {
+                        buildNucleus: "https://phet.colorado.edu/sims/html/build-a-nucleus/latest/build-a-nucleus_en.html",
+                        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+                        fourierMakingWaves: "https://phet.colorado.edu/sims/html/fourier-making-waves/latest/fourier-making-waves_en.html",
+                        buildMolecule: "https://phet.colorado.edu/sims/html/build-a-molecule/latest/build-a-molecule_en.html",
+                        diffusion: "https://phet.colorado.edu/sims/html/diffusion/latest/diffusion_en.html",
+                        gasProperties: "https://phet.colorado.edu/sims/html/gas-properties/latest/gas-properties_en.html",
+                        blackbodySpectrum: "https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_en.html",
+                        energyFormsChanges: "https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_en.html",
+                        coulombsLaw: "https://phet.colorado.edu/sims/html/coulombs-law/latest/coulombs-law_en.html",
+                        moleculePolarity: "https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_en.html",
+                        statesMatterBasics: "https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_en.html",
+                        statesMatter: "https://phet.colorado.edu/sims/html/states-of-matter/latest/states-of-matter_en.html",
+                        atomicInteractions: "https://phet.colorado.edu/sims/html/atomic-interactions/latest/atomic-interactions_en.html",
+                        rutherfordScattering: "https://phet.colorado.edu/sims/html/rutherford-scattering/latest/rutherford-scattering_en.html",
+                        isotopesAtomicMass: "https://phet.colorado.edu/sims/html/isotopes-and-atomic-mass/latest/isotopes-and-atomic-mass_en.html",
+                        moleculesLight: "https://phet.colorado.edu/sims/html/molecules-and-light/latest/molecules-and-light_en.html",
+                        moleculeShapes: "https://phet.colorado.edu/sims/html/molecule-shapes/latest/molecule-shapes_en.html",
+                        reactantsProductsLeftovers: "https://phet.colorado.edu/sims/html/reactants-products-and-leftovers/latest/reactants-products-and-leftovers_en.html",
+                        waveString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+                        phScale: "https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html",
+                        balancingEquations: "https://phet.colorado.edu/sims/html/balancing-chemical-equations/latest/balancing-chemical-equations_en.html",
+                        acidBaseSolutions: "https://phet.colorado.edu/sims/html/acid-base-solutions/latest/acid-base-solutions_en.html",
+                        concentration: "https://phet.colorado.edu/sims/html/concentration/latest/concentration_en.html",
+                        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html",
+                        beersLawLab: "https://phet.colorado.edu/sims/html/beers-law-lab/latest/beers-law-lab_en.html",
+                        molarity: "https://phet.colorado.edu/sims/html/molarity/latest/molarity_en.html",
+                        buildAtom: "https://phet.colorado.edu/sims/html/build-an-atom/latest/build-an-atom_en.html"
+                    }
+                
+            },
+            Biology: {
+    elementary: {
+        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+        naturalSelection: "https://phet.colorado.edu/sims/html/natural-selection/latest/natural-selection_en.html",
+        colorVision: "https://phet.colorado.edu/sims/html/color-vision/latest/color-vision_en.html"
+    },
+    middle: {
+        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+        naturalSelection: "https://phet.colorado.edu/sims/html/natural-selection/latest/natural-selection_en.html",
+        colorVision: "https://phet.colorado.edu/sims/html/color-vision/latest/color-vision_en.html",
+        phScale: "https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html"
+    },
+    high: {
+        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+        naturalSelection: "https://phet.colorado.edu/sims/html/natural-selection/latest/natural-selection_en.html",
+        geneExpressionEssentials: "https://phet.colorado.edu/sims/html/gene-expression-essentials/latest/gene-expression-essentials_en.html",
+        moleculePolarity: "https://phet.colorado.edu/sims/html/molecule-polarity/latest/molecule-polarity_en.html",
+        neuron: "https://phet.colorado.edu/sims/html/neuron/latest/neuron_en.html",
+        colorVision: "https://phet.colorado.edu/sims/html/color-vision/latest/color-vision_en.html",
+        phScale: "https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html"
+    }
+},
+Math: {
+    elementary: {
+        'quadrilateral': "https://phet.colorado.edu/sims/html/quadrilateral/latest/quadrilateral_en.html",
+        numberCompare: "https://phet.colorado.edu/sims/html/number-compare/latest/number-compare_en.html",
+        numberPlay: "https://phet.colorado.edu/sims/html/number-play/latest/number-play_en.html",
+        ratioProportion: "https://phet.colorado.edu/sims/html/ratio-and-proportion/latest/ratio-and-proportion_en.html",
+        numberLineIntegers: "https://phet.colorado.edu/sims/html/number-line-integers/latest/number-line-integers_en.html",
+        fractionsMixedNumbers: "https://phet.colorado.edu/sims/html/fractions-mixed-numbers/latest/fractions-mixed-numbers_en.html",
+        fractionsIntro: "https://phet.colorado.edu/sims/html/fractions-intro/latest/fractions-intro_en.html",
+        buildFraction: "https://phet.colorado.edu/sims/html/build-a-fraction/latest/build-a-fraction_en.html",
+        fractionsEquality: "https://phet.colorado.edu/sims/html/fractions-equality/latest/fractions-equality_en.html",
+        equalityExplorerBasics: "https://phet.colorado.edu/sims/html/equality-explorer-basics/latest/equality-explorer-basics_en.html",
+        areaModelDecimals: "https://phet.colorado.edu/sims/html/area-model-decimals/latest/area-model-decimals_en.html",
+        areaModelMultiplication: "https://phet.colorado.edu/sims/html/area-model-multiplication/latest/area-model-multiplication_en.html",
+        areaModelIntroduction: "https://phet.colorado.edu/sims/html/area-model-introduction/latest/area-model-introduction_en.html",
+        pendulumLab: "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_en.html",
+        projectileMotion: "https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html",
+        expressionExchange: "https://phet.colorado.edu/sims/html/expression-exchange/latest/expression-exchange_en.html",
+        functionBuilderBasics: "https://phet.colorado.edu/sims/html/function-builder-basics/latest/function-builder-basics_en.html",
+        proportionPlayground: "https://phet.colorado.edu/sims/html/proportion-playground/latest/proportion-playground_en.html",
+        makeTen: "https://phet.colorado.edu/sims/html/make-a-ten/latest/make-a-ten_en.html",
+        arithmetic: "https://phet.colorado.edu/sims/html/arithmetic/latest/arithmetic_en.html",
+        areaBuilder: "https://phet.colorado.edu/sims/html/area-builder/latest/area-builder_en.html",
+        fractionMatcher: "https://phet.colorado.edu/sims/html/fraction-matcher/latest/fraction-matcher_en.html",
+        balancingAct: "https://phet.colorado.edu/sims/html/balancing-act/latest/balancing-act_en.html"
+    },
+    middle: {
+        quadrilateral: "https://phet.colorado.edu/sims/html/quadrilateral/latest/quadrilateral_en.html",
+        numberCompare: "https://phet.colorado.edu/sims/html/number-compare/latest/number-compare_en.html",
+        numberPlay: "https://phet.colorado.edu/sims/html/number-play/latest/number-play_en.html",
+        numberLineDistance: "https://phet.colorado.edu/sims/html/number-line-distance/latest/number-line-distance_en.html",
+        ratioProportion: "https://phet.colorado.edu/sims/html/ratio-and-proportion/latest/ratio-and-proportion_en.html",
+        numberLineOperations: "https://phet.colorado.edu/sims/html/number-line-operations/latest/number-line-operations_en.html",
+        numberLineIntegers: "https://phet.colorado.edu/sims/html/number-line-integers/latest/number-line-integers_en.html",
+        fractionsMixedNumbers: "https://phet.colorado.edu/sims/html/fractions-mixed-numbers/latest/fractions-mixed-numbers_en.html",
+        fractionsIntro: "https://phet.colorado.edu/sims/html/fractions-intro/latest/fractions-intro_en.html",
+        buildFraction: "https://phet.colorado.edu/sims/html/build-a-fraction/latest/build-a-fraction_en.html",
+        fractionsEquality: "https://phet.colorado.edu/sims/html/fractions-equality/latest/fractions-equality_en.html",
+        graphingQuadratics: "https://phet.colorado.edu/sims/html/graphing-quadratics/latest/graphing-quadratics_en.html",
+        equalityExplorerTwoVars: "https://phet.colorado.edu/sims/html/equality-explorer-two-variables/latest/equality-explorer-two-variables_en.html",
+        equalityExplorerBasics: "https://phet.colorado.edu/sims/html/equality-explorer-basics/latest/equality-explorer-basics_en.html",
+        equalityExplorer: "https://phet.colorado.edu/sims/html/equality-explorer/latest/equality-explorer_en.html",
+        areaModelAlgebra: "https://phet.colorado.edu/sims/html/area-model-algebra/latest/area-model-algebra_en.html",
+        areaModelDecimals: "https://phet.colorado.edu/sims/html/area-model-decimals/latest/area-model-decimals_en.html",
+        areaModelMultiplication: "https://phet.colorado.edu/sims/html/area-model-multiplication/latest/area-model-multiplication_en.html",
+        areaModelIntroduction: "https://phet.colorado.edu/sims/html/area-model-introduction/latest/area-model-introduction_en.html",
+        pendulumLab: "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_en.html",
+        projectileMotion: "https://phet.colorado.edu/sims/html/projectile-motion/latest/projectile-motion_en.html",
+        expressionExchange: "https://phet.colorado.edu/sims/html/expression-exchange/latest/expression-exchange_en.html",
+        graphingSlopeIntercept: "https://phet.colorado.edu/sims/html/graphing-slope-intercept/latest/graphing-slope-intercept_en.html",
+        functionBuilderBasics: "https://phet.colorado.edu/sims/html/function-builder-basics/latest/function-builder-basics_en.html",
+        proportionPlayground: "https://phet.colorado.edu/sims/html/proportion-playground/latest/proportion-playground_en.html",
+        unitRates: "https://phet.colorado.edu/sims/html/unit-rates/latest/unit-rates_en.html",
+        makeTen: "https://phet.colorado.edu/sims/html/make-a-ten/latest/make-a-ten_en.html",
+        plinkoProbability: "https://phet.colorado.edu/sims/html/plinko-probability/latest/plinko-probability_en.html",
+        functionBuilder: "https://phet.colorado.edu/sims/html/function-builder/latest/function-builder_en.html",
+        arithmetic: "https://phet.colorado.edu/sims/html/arithmetic/latest/arithmetic_en.html",
+        areaBuilder: "https://phet.colorado.edu/sims/html/area-builder/latest/area-builder_en.html",
+        waveString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+        graphingLines: "https://phet.colorado.edu/sims/html/graphing-lines/latest/graphing-lines_en.html",
+        fractionMatcher: "https://phet.colorado.edu/sims/html/fraction-matcher/latest/fraction-matcher_en.html",
+        balancingAct: "https://phet.colorado.edu/sims/html/balancing-act/latest/balancing-act_en.html",
+        ohmsLaw: "https://phet.colorado.edu/sims/html/ohms-law/latest/ohms-law_en.html",
+        resistanceWire: "https://phet.colorado.edu/sims/html/resistance-in-a-wire/latest/resistance-in-a-wire_en.html"
+    },
+    high: {
+        samplingDistributions: "https://phet.colorado.edu/sims/html/sampling-distributions/latest/sampling-distributions_en.html",
+        dataLab: "https://phet.colorado.edu/sims/html/data-lab/latest/data-lab_en.html",
+        keplersLaws: "https://phet.colorado.edu/sims/html/keplers-laws/latest/keplers-laws_en.html",
+        calculusGrapher: "https://phet.colorado.edu/sims/html/calculus-grapher/latest/calculus-grapher_en.html",
+        fourierMakingWaves: "https://phet.colorado.edu/sims/html/fourier-making-waves/latest/fourier-making-waves_en.html",
+        vectorAdditionEquations: "https://phet.colorado.edu/sims/html/vector-addition-equations/latest/vector-addition-equations_en.html",
+        vectorAddition: "https://phet.colorado.edu/sims/html/vector-addition/latest/vector-addition_en.html",
+        curveFitting: "https://phet.colorado.edu/sims/html/curve-fitting/latest/curve-fitting_en.html",
+        graphingQuadratics: "https://phet.colorado.edu/sims/html/graphing-quadratics/latest/graphing-quadratics_en.html",
+        massesSprings: "https://phet.colorado.edu/sims/html/masses-and-springs/latest/masses-and-springs_en.html",
+        equalityExplorerTwoVars: "https://phet.colorado.edu/sims/html/equality-explorer-two-variables/latest/equality-explorer-two-variables_en.html",
+        equalityExplorerBasics: "https://phet.colorado.edu/sims/html/equality-explorer-basics/latest/equality-explorer-basics_en.html",
+        equalityExplorer: "https://phet.colorado.edu/sims/html/equality-explorer/latest/equality-explorer_en.html",
+        areaModelAlgebra: "https://phet.colorado.edu/sims/html/area-model-algebra/latest/area-model-algebra_en.html",
+        pendulumLab: "https://phet.colorado.edu/sims/html/pendulum-lab/latest/pendulum-lab_en.html",
+        circuitConstructionAc: "https://phet.colorado.edu/sims/html/circuit-construction-ac/latest/circuit-construction-ac_en.html",
+        functionBuilder: "https://phet.colorado.edu/sims/html/function-builder/latest/function-builder_en.html",
+        arithmetic: "https://phet.colorado.edu/sims/html/arithmetic/latest/arithmetic_en.html",
+        balancingAct: "https://phet.colorado.edu/sims/html/balancing-act/latest/balancing-act_en.html"
+    }
+},
+
+Earth: {
+    elementary: {
+        magnetCompass: "https://phet.colorado.edu/sims/html/magnet-and-compass/latest/magnet-and-compass_en.html",
+        mySolarSystem: "https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_en.html",
+        greenhouseEffect: "https://phet.colorado.edu/sims/html/greenhouse-effect/latest/greenhouse-effect_en.html",
+        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+        gravityForceLab: "https://phet.colorado.edu/sims/html/gravity-force-lab-basics/latest/gravity-force-lab-basics_en.html",
+        wavesIntro: "https://phet.colorado.edu/sims/html/waves-intro/latest/waves-intro_en.html",
+        gasesIntro: "https://phet.colorado.edu/sims/html/gases-intro/latest/gases-intro_en.html",
+        waveInterference: "https://phet.colorado.edu/sims/html/wave-interference/latest/wave-interference_en.html",
+        gravityOrbits: "https://phet.colorado.edu/sims/html/gravity-and-orbits/latest/gravity-and-orbits_en.html",
+        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html"
+    },
+    middle: {
+        magnetCompass: "https://phet.colorado.edu/sims/html/magnet-and-compass/latest/magnet-and-compass_en.html",
+        mySolarSystem: "https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_en.html",
+        greenhouseEffect: "https://phet.colorado.edu/sims/html/greenhouse-effect/latest/greenhouse-effect_en.html",
+        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+        gravityForceLab: "https://phet.colorado.edu/sims/html/gravity-force-lab-basics/latest/gravity-force-lab-basics_en.html",
+        wavesIntro: "https://phet.colorado.edu/sims/html/waves-intro/latest/waves-intro_en.html",
+        diffusion: "https://phet.colorado.edu/sims/html/diffusion/latest/diffusion_en.html",
+        gasesIntro: "https://phet.colorado.edu/sims/html/gases-intro/latest/gases-intro_en.html",
+        blackbodySpectrum: "https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_en.html",
+        waveInterference: "https://phet.colorado.edu/sims/html/wave-interference/latest/wave-interference_en.html",
+        gravityOrbits: "https://phet.colorado.edu/sims/html/gravity-and-orbits/latest/gravity-and-orbits_en.html",
+        moleculesLight: "https://phet.colorado.edu/sims/html/molecules-and-light/latest/molecules-and-light_en.html",
+        waveString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+        phScale: "https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html",
+        underPressure: "https://phet.colorado.edu/sims/html/under-pressure/latest/under-pressure_en.html",
+        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html"
+    },
+    high: {
+        magnetCompass: "https://phet.colorado.edu/sims/html/magnet-and-compass/latest/magnet-and-compass_en.html",
+        keplersLaws: "https://phet.colorado.edu/sims/html/keplers-laws/latest/keplers-laws_en.html",
+        mySolarSystem: "https://phet.colorado.edu/sims/html/my-solar-system/latest/my-solar-system_en.html",
+        greenhouseEffect: "https://phet.colorado.edu/sims/html/greenhouse-effect/latest/greenhouse-effect_en.html",
+        density: "https://phet.colorado.edu/sims/html/density/latest/density_en.html",
+        diffusion: "https://phet.colorado.edu/sims/html/diffusion/latest/diffusion_en.html",
+        gasProperties: "https://phet.colorado.edu/sims/html/gas-properties/latest/gas-properties_en.html",
+        blackbodySpectrum: "https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_en.html",
+        waveInterference: "https://phet.colorado.edu/sims/html/wave-interference/latest/wave-interference_en.html",
+        gravityOrbits: "https://phet.colorado.edu/sims/html/gravity-and-orbits/latest/gravity-and-orbits_en.html",
+        moleculesLight: "https://phet.colorado.edu/sims/html/molecules-and-light/latest/molecules-and-light_en.html",
+        waveString: "https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_en.html",
+        phScale: "https://phet.colorado.edu/sims/html/ph-scale/latest/ph-scale_en.html",
+        underPressure: "https://phet.colorado.edu/sims/html/under-pressure/latest/under-pressure_en.html",
+        gravityForceLab: "https://phet.colorado.edu/sims/html/gravity-force-lab/latest/gravity-force-lab_en.html",
+        balloonsStatic: "https://phet.colorado.edu/sims/html/balloons-and-static-electricity/latest/balloons-and-static-electricity_en.html"
+    }
+},
+
+    },
+
+  hindi: {
+    Physics: {
+      elementary: {
+        'क्षेत्र निर्माता': 'http://localhost/simulation/hindi/Physics/Elementary/area-builder_hi.html',
+            'क्षेत्र मॉडल दशमलव': 'http://localhost/simulation/hindi/Physics/Elementary/area-model-decimals_hi.html',
+            'क्षेत्र मॉडल परिचय': 'http://localhost/simulation/hindi/Physics/Elementary/area-model-introduction_hi.html',
+            'क्षेत्र मॉडल गुणा': 'http://localhost/simulation/hindi/Physics/Elementary/area-model-multiplication_hi.html',
+            'अंकगणित':'http://localhost/simulation/hindi/Physics/Elementary/arithmetic_hi.html',
+            'संतुलन क्रिया': 'http://localhost/simulation/hindi/Physics/Elementary/balancing-act_hi.html',
+            'गुब्बारे और स्थैतिक विद्युत': 'http://localhost/simulation/hindi/Physics/Elementary/balloons-and-static-electricity_hi.html', 
+             'प्रकाश का अपवर्तन': 'http://localhost/simulation/hindi/Physics/Elementary/bending-light_hi.html',
+            'भिन्न बनाएं': 'http://localhost/simulation/hindi/Physics/Elementary/build-a-fraction_hi.html',
+            'परिपथ निर्माण किट (डीसी वर्चुअल लैब)': 'http://localhost/simulation/hindi/Physics/Elementary/circuit-construction-kit-dc-virtual-lab_hi.html',
+            'परिपथ निर्माण किट (डीसी)': 'http://localhost/simulation/hindi/Physics/Elementary/circuit-construction-kit-dc_hi.html',
+            'रंग दृष्टि': 'http://localhost/simulation/hindi/Physics/Elementary/color-vision_hi.html',
+            'सांद्रता': 'http://localhost/simulation/hindi/Physics/Elementary/concentration_hi.html',
+            'घनत्व': 'http://localhost/simulation/hindi/Physics/Elementary/density_hi.html',
+            ' ऊर्जा रूप और परिवर्तन': 'http://localhost/simulation/hindi/Physics/Elementary/energy-forms-and-changes_hi.html',
+            'ऊर्जा स्केट पार्क मूल बातें':'http://localhost/simulation/hindi/Physics/Elementary/energy-skate-park-basics_hi.html',
+            'समानता खोजक मूल बातें': 'http://localhost/simulation/hindi/Physics/Elementary/equality-explorer-basics_hi.html',
+            'अभिव्यक्ति आदान-प्रदान': 'http://localhost/simulation/hindi/Physics/Elementary/expression-exchange_hi.html',
+            'बल और गति': 'http://localhost/simulation/hindi/Physics/Elementary/forces-and-motion-basics_hi.html',
+            'भिन्न मिलानकर्ता': 'http://localhost/simulation/hindi/Physics/Elementary/fraction-matcher_hi.html',
+            'भिन्न समानता':'http://localhost/simulation/hindi/Physics/Elementary/fractions-equality_hi.html',
+            ' भिन्न परिचय':'http://localhost/simulation/hindi/Physics/Elementary/fractions-intro_hi.html',
+            'मिश्रित संख्याओं के भिन्न':'http://localhost/simulation/hindi/Physics/Elementary/fractions-mixed-numbers_hi.html',
+            'घर्षण': 'http://localhost/simulation/hindi/Physics/Elementary/friction_hi.html',
+            'फलन निर्माता': 'http://localhost/simulation/hindi/Physics/Elementary/function-builder-basics_hi.html',
+            ' गैसों का परिचय': 'http://localhost/simulation/hindi/Physics/Elementary/gases-intro_hi.html',
+            'ज्यामितीय प्रकाशिकी मूल बातें': 'http://localhost/simulation/hindi/Physics/Elementary/geometric-optics-basics_hi.html',
+            ' गुरुत्वाकर्षण और कक्षाएँ': 'http://localhost/simulation/hindi/Physics/Elementary/gravity-and-orbits_hi.html',
+            'गुरुत्वाकर्षण बल लैब मूल बातें': 'http://localhost/simulation/hindi/Physics/Elementary/gravity-force-lab-basics_hi.html',
+            'ग्रीनहाउस प्रभाव': 'http://localhost/simulation/hindi/Physics/Elementary/greenhouse-effect_hi.html',
+            ' जॉन ट्रावोल्टेज': 'http://localhost/simulation/hindi/Physics/Elementary/john-travoltage_hi.html',
+             'चुम्बक और कम्पास': 'http://localhost/simulation/hindi/Physics/Elementary/magnet-and-compass_hi.html',
+            'चुम्बक और विद्युतचुम्बक': 'http://localhost/simulation/hindi/Physics/Elementary/magnets-and-electromagnets_hi.html',
+            ' दस बनाएं':'http://localhost/simulation/hindi/Physics/Elementary/make-a-ten_hi.html',
+             'द्रव्यमान और स्प्रिंग्स मूल बातें': 'http://localhost/simulation/hindi/Physics/Elementary/masses-and-springs-basics_hi.html',
+             'मेरा सौरमंडल': 'http://localhost/simulation/hindi/Physics/Elementary/my-solar-system_hi.html',
+             'प्राकृतिक चयन': 'http://localhost/simulation/hindi/Physics/Elementary/natural-selection_hi.html',
+             'संख्या तुलना': 'http://localhost/simulation/hindi/Physics/Elementary/number-compare_hi.html',
+             'संख्या रेखा पूर्णांक':'http://localhost/simulation/hindi/Physics/Elementary/number-line-integers_hi.html',
+             'संख्या खेल':'http://localhost/simulation/hindi/Physics/Elementary/number-play_hi.html',
+             'लंबक प्रयोगशाला':'http://localhost/simulation/hindi/Physics/Elementary/pendulum-lab_hi.html',
+             ' प्रक्षेप्य गति': 'http://localhost/simulation/hindi/Physics/Elementary/projectile-motion_hi.html',
+             'अनुपात खेल का मैदान': 'http://localhost/simulation/hindi/Physics/Elementary/proportion-playground_hi.html',
+             'चतुर्भुज':'http://localhost/simulation/hindi/Physics/Elementary/quadrilateral_hi.html',
+             'अनुपात और समानुपात':'http://localhost/simulation/hindi/Physics/Elementary/ratio-and-proportion_hi.html',
+             'पदार्थ की अवस्थाएँ मूल बातें':'http://localhost/simulation/hindi/Physics/Elementary/states-of-matter-basics_hi.html',
+             'तरंग हस्तक्षेप': 'http://localhost/simulation/hindi/Physics/Elementary/wave-interference_hi.html',
+             'तरंगों का परिचय': 'http://localhost/simulation/hindi/Physics/Elementary/waves-intro_hi.html',
+           
+      },
+      middle: {
+        'संतुलन क्रिया': 'http://localhost/simulation/hindi/Physics/mid/balancing-act_hi.html',
+    'रासायनिक समीकरणों का संतुलन': 'http://localhost/simulation/hindi/Physics/mid/balancing-chemical-equations_hi.html',
+    
+    'गुब्बारे और स्थैतिक बिजली': 'http://localhost/simulation/hindi/Physics/mid/balloons-and-static-electricity_hi.html',
+    'प्रकाश का मुड़ना': 'http://localhost/simulation/hindi/Physics/mid/bending-light_hi.html',
+    'काले शरीर का स्पेक्ट्रम': 'http://localhost/simulation/hindi/Physics/mid/blackbody-spectrum_hi.html',
+    'एक भिन्न बनाएं': 'http://localhost/simulation/hindi/Physics/mid/build-a-fraction_hi.html',
+    ' एक अणु बनाएं': 'http://localhost/simulation/hindi/Physics/mid/build-a-molecule_hi.html',
+    ' एक परमाणु बनाएं': 'http://localhost/simulation/hindi/Physics/mid/build-an-atom_hi.html',
+    ' परिपथ निर्माण किट - डीसी आभासी प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/mid/circuit-construction-kit-dc-virtual-lab_hi%20(1).html',
+    ' परिपथ निर्माण किट - डीसी': 'http://localhost/simulation/hindi/Physics/mid/circuit-construction-kit-dc_hi.html',
+    'टकराव प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/mid/collision-lab_hi.html',
+    'रंग दृष्टि': 'http://localhost/simulation/hindi/Physics/mid/color-vision_hi.html',
+    ' सघनता': 'http://localhost/simulation/hindi/Physics/mid/concentration_hi.html',
+
+    'घनत्व': 'http://localhost/simulation/hindi/Physics/mid/density_hi.html',
+    'विसरण': 'http://localhost/simulation/hindi/Physics/mid/diffusion_hi.html',
+    'ऊर्जा रूप और परिवर्तन': 'http://localhost/simulation/hindi/Physics/mid/energy-forms-and-changes_hi.html',
+    'ऊर्जा स्केट पार्क की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/energy-skate-park-basics_hi%20(1).html',
+    'समानता अन्वेषक (दो चर)': 'http://localhost/simulation/hindi/Physics/mid/equality-explorer-two-variables_hi.html',
+    'अभिव्यक्ति परिवर्तन': 'http://localhost/simulation/hindi/Physics/mid/expression-exchange_hi.html',
+    'फराडे का विद्युतचुंबकीय प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/mid/faradays-electromagnetic-lab_hi.html',
+    'फराडे का नियम': 'http://localhost/simulation/hindi/Physics/mid/faradays-law_hi.html',
+    'बल और गति की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/forces-and-motion-basics_hi.html',
+    ' भिन्न मिलाना': 'http://localhost/simulation/hindi/Physics/mid/fraction-matcher_hi.html',
+    'भिन्न समानता': 'http://localhost/simulation/hindi/Physics/mid/fractions-equality_hi.html',
+    'भिन्नों का परिचय': 'http://localhost/simulation/hindi/Physics/mid/fractions-intro_hi.html',
+    'मिश्रित संख्याएँ और भिन्न': 'http://localhost/simulation/hindi/Physics/mid/fractions-mixed-numbers_hi.html',
+    'घर्षण': 'http://localhost/simulation/hindi/Physics/mid/friction_hi.html',
+    'कार्य निर्माण की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/function-builder-basics_hi.html',
+
+    
+    ' गैसों का परिचय': 'http://localhost/simulation/hindi/Physics/mid/gases-intro_hi.html',
+   
+    'गुरुत्वाकर्षण और कक्षाएँ': 'http://localhost/simulation/hindi/Physics/mid/gravity-and-orbits_hi.html',
+    'गुरुत्वाकर्षण बल प्रयोगशाला की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/gravity-force-lab-basics_hi.html',
+
+    'ग्रीनहाउस प्रभाव': 'http://localhost/simulation/hindi/Physics/mid/greenhouse-effect_hi.html',
+    'जॉन ट्रैवलवोल्टेज': 'http://localhost/simulation/hindi/Physics/mid/john-travoltage_hi.html',
+    'चुंबक और कंपास': 'http://localhost/simulation/hindi/Physics/mid/magnet-and-compass_hi.html',
+    'चुंबक और विद्युतचुंबक': 'http://localhost/simulation/hindi/Physics/mid/magnets-and-electromagnets_hi.html',
+    'द्रव्यमान और स्प्रिंग की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/masses-and-springs-basics_hi.html',
+
+    'अणु के आकार की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/molecule-shapes-basics_hi.html',
+    ' अणु और प्रकाश': 'http://localhost/simulation/hindi/Physics/mid/molecules-and-light_hi.html',
+    'मेरा सौरमंडल': 'http://localhost/simulation/hindi/Physics/mid/my-solar-system_hi.html',
+    'ओहम का नियम': 'http://localhost/simulation/hindi/Physics/mid/ohms-law_hi.html',
+    ' झूला प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/mid/pendulum-lab_hi.html',
+    'pH स्केल की बुनियादी बातें': 'http://localhost/simulation/hindi/Physics/mid/ph-scale-basics_hi.html',
+    'pH स्केल': 'http://localhost/simulation/hindi/Physics/mid/ph-scale_hi.html',
+    'प्लिंको संभावना': 'http://localhost/simulation/hindi/Physics/mid/plinko-probability_hi.html',
+    'प्रक्षिप्त गति': 'http://localhost/simulation/hindi/Physics/mid/projectile-motion_hi.html',
+    ' अनुपात का खेल': 'http://localhost/simulation/hindi/Physics/mid/proportion-playground_hi.html',
+    'चतुर्भुज': 'http://localhost/simulation/hindi/Physics/mid/quadrilateral_hi.html',
+    'अनुपात और समानुपात': 'http://localhost/simulation/hindi/Physics/mid/ratio-and-proportion_hi.html',
+
+    'अभिकर्ता और उत्पाद': 'http://localhost/simulation/hindi/Physics/mid/reactants-products-and-leftovers_hi.html',
+    'तार में प्रतिरोध': 'http://localhost/simulation/hindi/Physics/mid/resistance-in-a-wire_hi.html',
+    'ध्वनि तरंगें': 'http://localhost/simulation/hindi/Physics/mid/sound-waves_hi.html',
+    ' पदार्थ की अवस्थाएँ': 'http://localhost/simulation/hindi/Physics/mid/states-of-matter-basics_hi.html',
+    ' दबाव में': 'http://localhost/simulation/hindi/Physics/mid/under-pressure_hi.html',
+    'तरंग हस्तक्षेप': 'http://localhost/simulation/hindi/Physics/mid/wave-interference_hi.html',
+    'डोरी पर तरंग': 'http://localhost/simulation/hindi/Physics/mid/wave-on-a-string_hi.html',
+    'तरंगों का परिचय': 'http://localhost/simulation/hindi/Physics/mid/waves-intro_hi.html',
+   
+      },
+      high: {
+       'गुब्बारे और स्थैतिक विद्युत': 'http://localhost/simulation/hindi/Physics/high/balloons-and-static-electricity_hi.html',
+            'संतुलन अधिनियम': 'http://localhost/simulation/hindi/Physics/high/balancing-act_hi.html',
+            'प्रकाश का मुड़ना': 'http://localhost/simulation/hindi/Physics/high/bending-light_hi.html',
+            'काला पिंड स्पेक्ट्रम': 'http://localhost/simulation/hindi/Physics/high/blackbody-spectrum_hi.html',
+            'एक नाभिक बनाएं': 'http://localhost/simulation/hindi/Physics/high/build-a-nucleus_hi.html',
+            'एक परमाणु बनाएं': 'http://localhost/simulation/hindi/Physics/high/build-an-atom_hi.html',
+            'कलन ग्राफर': 'http://localhost/simulation/hindi/Physics/high/calculus-grapher_hi.html',
+            'धारिता प्रयोगशाला: मूलभूत': 'http://localhost/simulation/hindi/Physics/high/capacitor-lab-basics_hi.html',
+            'आवेश और क्षेत्र': 'http://localhost/simulation/hindi/Physics/high/charges-and-fields_hi.html',
+            'परिपथ निर्माण किट': 'http://localhost/simulation/hindi/Physics/high/circuit-construction-kit-ac-virtual-lab_hi.html',
+            'परिपथ निर्माण किट (DC)': 'http://localhost/simulation/hindi/Physics/high/circuit-construction-kit-dc-virtual-lab_hi.html',
+            'टक्कर प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/high/collision-lab_hi.html',
+            'रंग दृष्टि': 'http://localhost/simulation/hindi/Physics/high/color-vision_hi.html',
+            'कूलॉम्ब का नियम': 'http://localhost/simulation/hindi/Physics/high/coulombs-law_hi.html',
+            'वक्र फिटिंग': 'http://localhost/simulation/hindi/Physics/high/curve-fitting_hi.html',
+            'घनत्व': 'http://localhost/simulation/hindi/Physics/high/density_hi.html',
+            'प्रसरण': 'http://localhost/simulation/hindi/Physics/high/diffusion_hi.html',
+            'ऊर्जा के रूप और परिवर्तन': 'http://localhost/simulation/hindi/Physics/high/energy-forms-and-changes_hi.html',
+            'ऊर्जा स्केट पार्क: मूलभूत': 'http://localhost/simulation/hindi/Physics/high/energy-skate-park-basics_hi.html',
+            'फैराडे का विद्युत-चुंबकीय प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/high/faradays-electromagnetic-lab_hi.html',
+            'फैराडे का नियम': 'http://localhost/simulation/hindi/Physics/high/faradays-law_hi.html',
+            'गैस गुण': 'http://localhost/simulation/hindi/Physics/high/gas-properties_hi.html',
+            'ज्यामितीय प्रकाशिकी: मूलभूत': 'http://localhost/simulation/hindi/Physics/high/geometric-optics-basics_hi.html',
+            'गुरुत्वाकर्षण और कक्षा': 'http://localhost/simulation/hindi/Physics/high/gravity-and-orbits_hi.html',
+            'गुरुत्वाकर्षण बल प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/high/gravity-force-lab_hi.html',
+            'हुक का नियम': 'http://localhost/simulation/hindi/Physics/high/hookes-law_hi.html',
+            'चुंबक और दिशा सूचक यंत्र': 'http://localhost/simulation/hindi/Physics/high/magnet-and-compass_hi.html',
+
+            'भार और स्प्रिंग्स: मूलभूत': 'http://localhost/simulation/hindi/Physics/high/masses-and-springs_hi.html',
+            'आणविक संरचना और प्रकाश': 'http://localhost/simulation/hindi/Physics/high/molecules-and-light_hi.html',
+            'मेरा सौर मंडल': 'http://localhost/simulation/hindi/Physics/high/my-solar-system_hi.html',
+            'सामान्य मोड्स': 'http://localhost/simulation/hindi/Physics/high/normal-modes_hi.html',
+            'ओम का नियम': 'http://localhost/simulation/hindi/Physics/high/ohms-law_hi.html',
+            'लंबक प्रयोगशाला': 'http://localhost/simulation/hindi/Physics/high/pendulum-lab_hi.html',
+            'प्लिंको संभाव्यता': 'http://localhost/simulation/hindi/Physics/high/plinko-probability_hi.html',
+            'प्रक्षेप्य गति': 'http://localhost/simulation/hindi/Physics/high/projectile-motion_hi.html',
+            'तार में प्रतिरोध': 'http://localhost/simulation/hindi/Physics/high/resistance-in-a-wire_hi.html',
+            'रदरफोर्ड प्रकीर्णन': 'http://localhost/simulation/hindi/Physics/high/rutherford-scattering_hi.html',
+            'ध्वनि तरंगें': 'http://localhost/simulation/hindi/Physics/high/sound-waves_hi.html',
+            'पदार्थों की अवस्थाएँ: मूलभूत': 'http://localhost/simulation/hindi/Physics/high/states-of-matter-basics_hi.html',
+            'पदार्थों की अवस्थाएँ': 'http://localhost/simulation/hindi/Physics/high/states-of-matter_hi.html',
+            'सदिश योग': 'http://localhost/simulation/hindi/Physics/high/vector-addition_hi.html',
+            'तरंग हस्तक्षेप': 'http://localhost/simulation/hindi/Physics/high/wave-interference_hi.html',
+            'स्ट्रिंग पर तरंग': 'http://localhost/simulation/hindi/Physics/high/wave-on-a-string_hi.html'
+
+      },
+    },
+    Chemistry: {
+      elementary: {
+        'सांद्रता': 'http://localhost/simulation/hindi/Chemistry/elementary/concentration_hi.html',
+        'घनत्व': 'http://localhost/simulation/hindi/Chemistry/elementary/density_hi.html',
+        'ऊर्जा के प्रकार और परिवर्तन': 'http://localhost/simulation/hindi/Chemistry/elementary/energy-forms-and-changes_hi.html',
+        'गैसों का परिचय': 'http://localhost/simulation/hindi/Chemistry/elementary/gases-intro_hi.html',
+        'द्रव्य की अवस्थाओं की मूल बातें': 'http://localhost/simulation/hindi/Chemistry/elementary/states-of-matter-basics_hi.html'
+
+      },
+      middle: {
+          
+   'स्ट्रिंग पर तरंग': 'http://localhost/simulation/english/chemistry/middle/wave-on-a-string_en.html',
+'पदार्थों की अवस्थाएँ': 'http://localhost/simulation/english/chemistry/middle/states-of-matter-basics_en.html',
+
+'प्रतिक्रियार्थक, उत्पाद और बचा हुआ': 'http://localhost/simulation/english/chemistry/middle/reactants-products-and-leftovers_en.html',
+'pH पैमाना': 'http://localhost/simulation/english/chemistry/middle/ph-scale_en.html',
+'pH पैमाना: मूलभूत': 'http://localhost/simulation/english/chemistry/middle/ph-scale-basics_en.html',
+'आणविक संरचना और प्रकाश': 'http://localhost/simulation/english/chemistry/middle/molecules-and-light_en.html',
+'आणविक आकार: मूलभूत': 'http://localhost/simulation/english/chemistry/middle/molecule-shapes-basics_en.html',
+'आइसोटोप और परमाणु द्रव्यमान': 'http://localhost/simulation/english/chemistry/middle/isotopes-and-atomic-mass_en.html',
+'गैस परिचय': 'http://localhost/simulation/english/chemistry/middle/gases-intro_en.html',
+'ऊर्जा के रूप और परिवर्तन': 'http://localhost/simulation/english/chemistry/middle/energy-forms-and-changes_en.html',
+'प्रसरण': 'http://localhost/simulation/english/chemistry/middle/diffusion_en.html',
+'घनत्व': 'http://localhost/simulation/english/chemistry/middle/density_en.html',
+'सांद्रता': 'http://localhost/simulation/english/chemistry/middle/concentration_en.html',
+'एक परमाणु बनाएं': 'http://localhost/simulation/english/chemistry/middle/balloons-and-static-electricity_en.html',
+'एक अणु बनाएं': 'http://localhost/simulation/english/chemistry/middle/build-a-molecule_en.html',
+'काला पिंड स्पेक्ट्रम': 'http://localhost/simulation/english/chemistry/middle/blackbody-spectrum_en.html',
+'गुब्बारे और स्थैतिक विद्युत': 'http://localhost/simulation/english/chemistry/middle/build-an-atom_en.html',
+'रासायनिक समीकरण संतुलित करें': 'http://localhost/simulation/english/chemistry/middle/balancing-chemical-equations_en.html',
+      },
+      high: {
+        'एसिड-बेस समाधान': 'http://localhost/simulation/hindi/Chemistry/high/acid-base-solutions_hi.html',
+'परमाण्विक अंत:क्रियाएं': 'http://localhost/simulation/hindi/Chemistry/high/atomic-interactions_hi.html',
+'रासायनिक समीकरण संतुलन': 'http://localhost/simulation/hindi/Chemistry/high/balancing-chemical-equations_hi.html',
+'गुब्बारे और स्थिर बिजली': 'http://localhost/simulation/hindi/Chemistry/high/balloons-and-static-electricity_hi.html',
+'ब्लैकबॉडी स्पेक्ट्रम': 'http://localhost/simulation/hindi/Chemistry/high/blackbody-spectrum_hi.html',
+'बीयर्स कानून प्रयोगशाला': 'http://localhost/simulation/hindi/Chemistry/high/beers-law-lab_hi.html',
+'अणु का निर्माण करें': 'http://localhost/simulation/hindi/Chemistry/high/build-a-molecule_hi.html',
+'नाभिक का निर्माण करें': 'http://localhost/simulation/hindi/Chemistry/high/build-a-nucleus_hi.html',
+'परमाणु का निर्माण करें': 'http://localhost/simulation/hindi/Chemistry/high/build-an-atom_hi.html',
+'सांद्रता': 'http://localhost/simulation/hindi/Chemistry/high/concentration_hi.html',
+'कूलॉम्ब का नियम': 'http://localhost/simulation/hindi/Chemistry/high/coulombs-law_hi.html',
+'घनत्व': 'http://localhost/simulation/hindi/Chemistry/high/density_hi.html',
+'प्रसार': 'http://localhost/simulation/hindi/Chemistry/high/diffusion_hi.html',
+'ऊर्जा रूप और परिवर्तन': 'http://localhost/simulation/hindi/Chemistry/high/energy-forms-and-changes_hi.html',
+'गैस गुणधर्म': 'http://localhost/simulation/hindi/Chemistry/high/gas-properties_hi.html',
+'आइसोटोप और परमाणु द्रव्यमान': 'http://localhost/simulation/hindi/Chemistry/high/isotopes-and-atomic-mass_hi.html',
+'मोलेरिटी': 'http://localhost/simulation/hindi/Chemistry/high/molarity_hi.html',
+'अणु ध्रुवीयता': 'http://localhost/simulation/hindi/Chemistry/high/molecule-polarity_hi.html',
+'अणु आकार मूल बातें': 'http://localhost/simulation/hindi/Chemistry/high/molecule-shapes-basics_hi.html',
+'अणु और प्रकाश': 'http://localhost/simulation/hindi/Chemistry/high/molecules-and-light_hi.html',
+'पीएच मापांक': 'http://localhost/simulation/hindi/Chemistry/high/ph-scale_hi.html',
+'अभिकारक, उत्पाद और शेष': 'http://localhost/simulation/hindi/Chemistry/high/reactants-products-and-leftovers_hi.html',
+'रदरफोर्ड प्रकीर्णन': 'http://localhost/simulation/hindi/Chemistry/high/rutherford-scattering_hi.html',
+'पदार्थ की अवस्थाएँ मूल बातें': 'http://localhost/simulation/hindi/Chemistry/high/states-of-matter-basics_hi.html',
+'पदार्थ की अवस्थाएँ': 'http://localhost/simulation/hindi/Chemistry/high/states-of-matter_hi.html',
+'स्ट्रिंग पर तरंग': 'http://localhost/simulation/hindi/Chemistry/high/wave-on-a-string_hi.html',
+
+      },
+    },
+    Biology: {
+      elementary: {
+        'घनत्व': 'http://localhost/simulation/hindi/Biology/elementary/density_hi.html',
+            'प्राकृतिक चयन': 'http://localhost/simulation/hindi/biology/elementary/natural-selection_hi.html',
+            'रंग दृष्टि': 'http://localhost/simulation/hindi/Biology/elementary/color-vision_hi.html'
+            
+      },
+      middle: {
+        'घनत्व': 'http://localhost/simulation/hindi/Biology/mid/density_hi.html',
+    'प्राकृतिक चयन': 'http://localhost/simulation/hindi/Biology/mid/natural-selection_hi.html',
+    'रंग दृष्टि': 'http://localhost/simulation/hindi/Biology/mid/color-vision_hi.html',
+    'pH Scale': 'http://localhost/simulation/hindi/Biology/mid/ph-scale_hi.html',
+      },
+      high: {
+        'रंग दृष्टि': 'http://localhost/simulation/hindi/Biology/high/color-vision_hi.html',
+'घनत्व': 'http://localhost/simulation/hindi/Biology/high/density_hi.html',
+'जीन-अभिव्यक्ति': 'http://localhost/simulation/hindi/Biology/high/gene-expression-essentials_hi.html',
+'अणु ध्रुवीयता': 'http://localhost/simulation/hindi/Biology/high/molecule-polarity_hi.html',
+'प्राकृतिक चयन': 'http://localhost/simulation/hindi/Biology/high/natural-selection_hi.html',
+'न्यूरॉन': 'http://localhost/simulation/hindi/Biology/high/neuron_hi.html',
+'पीएच मापांक': 'http://localhost/simulation/hindi/Biology/high/ph-scale_hi.html',
+      },
+    },
+    Math: {
+      elementary: {
+        'क्षेत्र निर्माता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/area-builder_hi.html',
+    'क्षेत्र मॉडल दशमलव': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/area-model-decimals_hi.html',
+    'क्षेत्र मॉडल परिचय': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/area-model-introduction_hi.html',
+    'क्षेत्र मॉडल गुणा': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/area-model-multiplication_hi.html',
+    'अंकगणित': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/arithmetic_hi.html',
+    'संतुलन क्रिया': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/balancing-act_hi.html',
+    'भिन्न बनाएं': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/build-a-fraction_hi.html',
+    'समानता खोजक मूल बातें':'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/equality-explorer-basics_hi.html',
+    ' अभिव्यक्ति आदान-प्रदान': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/expression-exchange_hi.html',
+    ' भिन्न मिलानकर्ता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/fraction-matcher_hi.html',
+    ' भिन्न समानता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/fractions-equality_hi.html',
+    'फलन निर्माता मूल बातें': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/function-builder-basics_hi.html',
+    'दस बनाएं': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/make-a-ten_hi.html',
+    'संख्या तुलना': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/number-compare_hi.html',
+    'संख्या रेखा पूर्णांक': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/number-line-integers_hi.html',
+    'संख्या खेल': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/number-play_hi.html',
+    'लंबक प्रयोगशाला': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/pendulum-lab_hi.html',
+   
+    'प्रक्षेप्य गति': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/projectile-motion_hi.html',
+    ' अनुपात खेल का मैदान': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/proportion-playground_hi.html',
+    'चतुर्भुज': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/quadrilateral_hi.html',
+    'अनुपात और समानुपात': 'http://localhost/simulation/hindi/Math%20&%20Statistics/elementary/ratio-and-proportion_hi.html',
+  
+      },
+      middle: {
+       'क्षेत्र निर्माता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/area-builder_hi.html',
+    'क्षेत्र मॉडल बिबंधक': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/area-model-algebra_hi.html',
+    'क्षेत्र मॉडल दशमलव': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/area-model-decimals_hi.html',
+    'क्षेत्र मॉडल गुणनफल': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/area-model-multiplication_hi.html',
+    'अंकगणित': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/arithmetic_hi.html',
+    'संतुलन क्रिया': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/balancing-act_hi.html',
+    'एक भिन्न बनाएं': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/build-a-fraction_hi.html',
+    'केंद्र और परिवर्तनीयता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/center-and-variability_hi.html',
+    'समानता अन्वेषक की बुनियादी बातें': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/equality-explorer-basics_hi.html',
+    'समानता अन्वेषक (दो चर)': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/equality-explorer-two-variables_hi.html',
+    'समानता अन्वेषक': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/equality-explorer_hi.html',
+    'अभिव्यक्ति परिवर्तन': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/expression-exchange_hi.html',
+    ' भिन्न मिलाना': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/fraction-matcher_hi.html',
+    'भिन्न समानता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/fractions-equality_hi.html',
+    'भिन्नों का परिचय': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/fractions-intro_hi.html',
+     'मिश्रित संख्याएँ और भिन्न': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/fractions-mixed-numbers_hi.html',
+    'कार्य निर्माण की बुनियादी बातें': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/function-builder-basics_hi.html',
+    'कार्य निर्माण': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/function-builder_hi.html',
+     'रेखाओं का ग्राफ बनाना': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/graphing-lines_hi.html',
+    'द्विघातीय रेखाओं का ग्राफ बनाना': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/graphing-quadratics_hi.html',
+     ' ढाल-इंटरसेप्ट का ग्राफ बनाना': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/graphing-slope-intercept_hi.html',
+    'औसत, साझेदारी और संतुलन': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/mean-share-and-balance_hi.html',
+    'संख्याओं की रेखा पर दूरी': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/number-line-distance_hi.html',
+    'संख्याओं की रेखा पर पूर्णांक': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/number-line-integers_hi.html',
+    'संख्याओं की रेखा पर संक्रियाएँ': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/number-line-operations_hi.html',
+    'ओहम का नियम': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/ohms-law_hi.html',
+    'झूला प्रयोगशाला': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/pendulum-lab_hi.html',
+    'प्लिंको संभावना': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/plinko-probability_hi.html',
+     'प्रक्षिप्त गति': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/projectile-motion_hi.html',
+     'अनुपात का खेल': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/proportion-playground_hi.html',
+
+     'चतुर्भुज': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/quadrilateral_hi.html',
+    'अनुपात और समानुपात': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/ratio-and-proportion_hi.html',
+    'तार में प्रतिरोध': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/resistance-in-a-wire_hi%20(1).html',
+    'इकाई दरें': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/unit-rates_hi.html',
+    'डोरी पर तरंग': 'http://localhost/simulation/hindi/Math%20&%20Statistics/mid/wave-on-a-string_hi.html'
+      },
+      high: {
+       'क्षेत्र मॉडल बीजगणित': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/area-model-algebra_hi.html',
+'संतुलन अधिनियम': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/balancing-act_hi.html',
+'कलन ग्राफर': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/calculus-grapher_hi.html',
+'वक्र फिटिंग': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/curve-fitting_hi.html',
+'समानता अन्वेषक: दो चर': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/equality-explorer-two-variables_hi.html',
+'समानता अन्वेषक': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/equality-explorer_hi.html',
+'अभिव्यक्ति विनिमय': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/expression-exchange_hi.html',
+'भिन्न मिलानकर्ता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/fraction-matcher_hi.html',
+'कार्य निर्माणकर्ता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/function-builder_hi.html',
+'रेखाओं का आलेखन': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/graphing-lines_hi.html',
+'द्विघातीय का आलेखन': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/graphing-quadratics_hi.html',
+'ढलान-अवरोधक आलेखन': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/graphing-slope-intercept_hi.html',
+'केपलर के नियम': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/keplers-laws_hi.html',
+'भार और स्प्रिंग्स': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/masses-and-springs_hi.html',
+'ओम का नियम': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/ohms-law_hi.html',
+'लंबक प्रयोगशाला': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/pendulum-lab_hi.html',
+'प्लिंको संभाव्यता': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/plinko-probability_hi.html',
+'प्रक्षेप्य गति': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/projectile-motion_hi.html',
+'तार में प्रतिरोध': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/resistance-in-a-wire_hi.html',
+'त्रिकोणमितीय भ्रमण': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/trig-tour_hi.html',
+'इकाई दरें': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/unit-rates_hi.html',
+'सदिश योग समीकरण': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/vector-addition-equations_hi.html',
+'सदिश योग': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/vector-addition_hi.html',
+'स्ट्रिंग पर तरंग': 'http://localhost/simulation/hindi/Math%20&%20Statistics/high/wave-on-a-string_hi.html',
+
+      },
+    },
+    Earth: {
+      elementary: {
+        'तरंगों का परिचय': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/waves-intro_hi.html',
+    'तरंग व्यतिकरण': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/wave-interference_hi.html',
+    'मेरा सौर मंडल': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/my-solar-system_hi.html',
+    'चुंबक और कंपास': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/magnet-and-compass_hi.html',
+     
+    'गुरुत्वाकर्षण बल प्रयोगशाला मूल बातें': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/gravity-force-lab-basics_hi.html',
+    'हरितगृह प्रभाव': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/greenhouse-effect_hi.html',
+    'गुरुत्वाकर्षण और कक्षाएँ': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/gravity-and-orbits_hi.html',
+    'गैसों का परिचय': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/gases-intro_hi.html',
+    'घनत्व': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/density_hi.html',
+    ' गुब्बारे और स्थिर बिजली': 'http://localhost/simulation/hindi/Earth%20&%20Space/elementary/balloons-and-static-electricity_hi.html'
+      },
+      middle: {
+        'तरंगों का परिचय': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/waves-intro_hi.html',
+    'डोरी पर तरंग': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/wave-on-a-string_hi.html',
+   'तरंग विवर्तन': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/wave-interference_hi.html',
+    'दबाव के अंतर्गत': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/under-pressure_hi.html',
+    'पीएच पैमाना': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/ph-scale_hi.html',
+    'मेरा सौरमंडल': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/my-solar-system_hi.html',
+    'अणु और प्रकाश': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/molecules-and-light_hi.html',
+    'चुम्बक और कंपास': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/magnet-and-compass_hi.html',
+    'ग्रीन हाउस प्रभाव': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/greenhouse-effect_hi.html',
+    'गुरुत्वाकर्षण बल प्रयोगशाला की बुनियादी बातें': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/gravity-force-lab-basics_hi.html',
+    'गुरुत्वाकर्षण और कक्षाएँ': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/gravity-and-orbits_hi.html',
+    'गैसों का परिचय': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/gases-intro_hi.html',
+    'प्रसार': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/diffusion_hi.html',
+    'घनत्व': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/density_hi.html',
+    'ब्लैकबॉडी स्पेक्ट्रम': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/blackbody-spectrum_hi.html',
+    'गुब्बारे और स्थैतिक बिजली': 'http://localhost/simulation/hindi/Earth%20&%20Space/mid/balloons-and-static-electricity_hi.html',
+      },
+      high: {
+        'गुब्बारे और स्थिर बिजली': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/balloons-and-static-electricity_hi.html',
+'ब्लैकबॉडी स्पेक्ट्रम': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/blackbody-spectrum_hi.html',
+'घनत्व': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/density_hi.html',
+'प्रसार': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/diffusion_hi.html',
+'गैस गुणधर्म': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/gas-properties_hi.html',
+'गुरुत्वाकर्षण और कक्षाएँ': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/gravity-and-orbits_hi.html',
+'गुरुत्वाकर्षण बल प्रयोगशाला': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/gravity-force-lab_hi.html',
+'ग्रीनहाउस प्रभाव': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/greenhouse-effect_hi.html',
+'केप्लर के नियम': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/keplers-laws_hi.html',
+'चुम्बक और कम्पास': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/magnet-and-compass_hi.html',
+'मेरा सौरमंडल': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/my-solar-system_hi.html',
+'पीएच मापांक': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/ph-scale_hi.html',
+'दबाव के अधीन': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/under-pressure_hi.html',
+'तरंग हस्तक्षेप': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/wave-interference_hi.html',
+'स्ट्रिंग पर तरंग': 'http://localhost/simulation/hindi/Earth%20&%20Space/high/wave-on-a-string_hi.html'
+      },
+    },
+  },
+  marathi: {
+    Physics: {
+      elementary: {
+        'एरिया बिल्डर': 'http://localhost/simulation/marathi/physics/Elementary/area-builder_mr.html',
+'एरिया मॉडेल दशमलव': 'http://localhost/simulation/marathi/physics/Elementary/area-model-decimals_mr.html',
+'एरिया मॉडेल परिचय': 'http://localhost/simulation/marathi/physics/Elementary/area-model-introduction_mr.html',
+'एरिया मॉडेल गुणाकार': 'http://localhost/simulation/marathi/physics/Elementary/area-model-multiplication_mr.html',
+'गणित': 'http://localhost/simulation/marathi/physics/Elementary/arithmetic_mr.html',
+'संतुलन क्रिया': 'http://localhost/simulation/marathi/physics/Elementary/balancing-act_mr.html',
+'बॅलून्स आणि स्थिर इलेक्ट्रोमॅग्नेट्स': 'http://localhost/simulation/marathi/physics/Elementary/balloons-and-static-electricity_mr.html',
+'बेंडिंग लाइट': 'http://localhost/simulation/marathi/physics/Elementary/bending-light_mr.html',
+'फ्रॅक्शन तयार करा': 'http://localhost/simulation/marathi/physics/Elementary/build-a-fraction_mr.html',
+'सर्किट कन्स्ट्रक्शन किट-डीसी व्हर्च्युअल लॅब': 'http://localhost/simulation/marathi/physics/Elementary/circuit-construction-kit-dc-virtual-lab_mr.html',
+'सर्किट कन्स्ट्रक्शन किट-डीसी': 'http://localhost/simulation/marathi/physics/Elementary/circuit-construction-kit-dc_mr.html',
+'कलर विजन': 'http://localhost/simulation/marathi/physics/Elementary/color-vision_mr.html',
+'कंसन्ट्रेशन': 'http://localhost/simulation/marathi/physics/Elementary/concentration_mr.html',
+'घनता': 'http://localhost/simulation/marathi/physics/Elementary/density_mr.html',
+'ऊर्जा रूप आणि बदल': 'http://localhost/simulation/marathi/physics/Elementary/energy-forms-and-changes_mr.html',
+'ऊर्जा स्केट पार्क बेसिक्स': 'http://localhost/simulation/marathi/physics/Elementary/energy-skate-park-basics_mr.html',
+'अभिव्यक्ती बदल': 'http://localhost/simulation/marathi/physics/Elementary/expression-exchange_mr.html',
+'बळ आणि गती बेसिक्स': 'http://localhost/simulation/marathi/physics/Elementary/forces-and-motion-basics_mr.html',
+'फ्रॅक्शन मॅच': 'http://localhost/simulation/marathi/physics/Elementary/fraction-matcher_mr.html',
+'फ्रॅक्शन समत्त्व': 'http://localhost/simulation/marathi/physics/Elementary/fractions-equality_mr.html',
+'फ्रॅक्शन परिचय': 'http://localhost/simulation/marathi/physics/Elementary/fractions-intro_mr.html',
+'फ्रॅक्शन मिक्स्ड नंबर': 'http://localhost/simulation/marathi/physics/Elementary/fractions-mixed-numbers_mr.html',
+'घर्षण': 'http://localhost/simulation/marathi/physics/Elementary/friction_mr.html',
+'गॅसेस परिचय': 'http://localhost/simulation/marathi/physics/Elementary/gases-intro_mr.html',
+'ज्योमेट्रिक ऑप्टिक्स बेसिक्स': 'http://localhost/simulation/marathi/physics/Elementary/geometric-optics-basics_mr.html',
+'गुरुत्व आणि कक्षाबद्धता': 'http://localhost/simulation/marathi/physics/Elementary/gravity-and-orbits_mr.html',
+'जॉन ट्रॅव्होल्टेज': 'http://localhost/simulation/marathi/physics/Elementary/john-travoltage_mr.html',
+'चुम्बक आणि दिशा दाखवणारा यंत्र': 'http://localhost/simulation/marathi/physics/Elementary/magnet-and-compass_mr.html',
+'चुम्बक आणि विद्युत चुम्बक': 'http://localhost/simulation/marathi/physics/Elementary/magnets-and-electromagnets_mr.html',
+'दहा तयार करा': 'http://localhost/simulation/marathi/physics/Elementary/make-a-ten_mr.html',
+'माझं सौरमंडल': 'http://localhost/simulation/marathi/physics/Elementary/my-solar-system_mr.html',
+'नैतिक निवड': 'http://localhost/simulation/marathi/physics/Elementary/natural-selection_mr.html',
+'पेंडुलम प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/Elementary/pendulum-lab_mr.html',
+'वस्त्रांचे स्थिती बेसिक्स': 'http://localhost/simulation/marathi/physics/Elementary/states-of-matter-basics_mr.html',
+'तरंग हस्तक्षेप': 'http://localhost/simulation/marathi/physics/Elementary/wave-interference_mr.html',
+'तरंग परिचय': 'http://localhost/simulation/marathi/physics/Elementary/waves-intro_mr.html',
+
+      },
+      middle: {
+        'क्षेत्र-निर्माता': 'http://localhost/simulation/marathi/physics/mid/area-builder_mr.html',
+    'क्षेत्र-मॉडेल-बियेजगणित': 'http://localhost/simulation/marathi/physics/mid/area-model-algebra_mr.html',
+    'क्षेत्र-मॉडेल-दशांश': 'http://localhost/simulation/marathi/physics/mid/area-model-decimals_mr.html',
+    'क्षेत्र-मॉडेल-गुणाकार': 'http://localhost/simulation/marathi/physics/mid/area-model-multiplication_mr.html',
+    'अंकगणित': 'http://localhost/simulation/marathi/physics/mid/arithmetic_mr.html',
+    'संतुलन-अभिनय': 'http://localhost/simulation/marathi/physics/mid/balancing-act_mr.html',
+    'रासायनिक समीकरणांचे संतुलन': 'http://localhost/simulation/marathi/physics/mid/balancing-chemical-equations_mr.html',
+    'फुगे आणि स्थिर वीज': 'http://localhost/simulation/marathi/physics/mid/balloons-and-static-electricity_mr.html',
+    'प्रकाशाचे वाकणे': 'http://localhost/simulation/marathi/physics/mid/bending-light_mr.html',
+    'भिन्न बांधा': 'http://localhost/simulation/marathi/physics/mid/build-a-fraction_mr.html',
+    'आण्विक बांधणी': 'http://localhost/simulation/marathi/physics/mid/build-a-molecule_mr.html',
+    'परमाणू बांधा': 'http://localhost/simulation/marathi/physics/mid/build-an-atom_mr.html',
+    'तरंगता-तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/buoyancy-basics_mr.html',
+    'संघटक लॅब-तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/capacitor-lab-basics_mr.html',
+    'भार आणि क्षेत्रे': 'http://localhost/simulation/marathi/physics/mid/charges-and-fields_mr.html',
+    'सर्किट बांधकाम संच': 'http://localhost/simulation/marathi/physics/mid/circuit-construction-kit-dc-virtual-lab_mr.html',
+    'सर्किट बांधकाम संच-DC': 'http://localhost/simulation/marathi/physics/mid/circuit-construction-kit-dc_mr.html',
+    'रंग दृष्टी': 'http://localhost/simulation/marathi/physics/mid/color-vision_mr.html',
+    'सांद्रता': 'http://localhost/simulation/marathi/physics/mid/concentration_mr.html',
+    'घनता': 'http://localhost/simulation/marathi/physics/mid/density_mr.html',
+    'विसरण': 'http://localhost/simulation/marathi/physics/mid/diffusion_mr.html',
+    'ऊर्जेचे प्रकार आणि बदल': 'http://localhost/simulation/marathi/physics/mid/energy-forms-and-changes_mr.html',
+    'ऊर्जेचा स्केट पार्क': 'http://localhost/simulation/marathi/physics/mid/energy-skate-park-basics_mr.html',
+    'अभिव्यक्ती-विनिमय': 'http://localhost/simulation/marathi/physics/mid/expression-exchange_mr.html',
+    'फॅराडेचे विद्युतचुंबकीय': 'http://localhost/simulation/marathi/physics/mid/faradays-electromagnetic-lab_mr.html',
+    'फॅराडेचा नियम': 'http://localhost/simulation/marathi/physics/mid/faradays-law_mr.html',
+    'शक्ती आणि हालचाल तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/forces-and-motion-basics_mr.html',
+    'भिन्न-सामन्यकरण': 'http://localhost/simulation/marathi/physics/mid/fraction-matcher_mr.html',
+    'भिन्न-समता': 'http://localhost/simulation/marathi/physics/mid/fractions-equality_mr.html',
+    'भिन्न-परिचय': 'http://localhost/simulation/marathi/physics/mid/fractions-intro_mr.html',
+    'मिश्र-भिन्न': 'http://localhost/simulation/marathi/physics/mid/fractions-mixed-numbers_mr.html',
+    'घर्षण': 'http://localhost/simulation/marathi/physics/mid/friction_mr.html',
+    'कार्य-बांधणी-तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/function-builder-basics_mr.html',
+    'कार्य-बांधणी': 'http://localhost/simulation/marathi/physics/mid/function-builder_mr.html',
+    'वायू परिचय': 'http://localhost/simulation/marathi/physics/mid/gases-intro_mr.html',
+    'जनरेटर': 'http://localhost/simulation/marathi/physics/mid/generator_mr.html',
+    'भौमितिक प्रकाशशास्त्र-तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/geometric-optics-basics_mr.html',
+    'भौमितिक प्रकाशशास्त्र': 'http://localhost/simulation/marathi/physics/mid/geometric-optics_mr.html',
+    'रेषा-रेखांकन': 'http://localhost/simulation/marathi/physics/mid/graphing-lines_mr.html',
+    'गुरुत्वाकर्षण आणि कक्षा': 'http://localhost/simulation/marathi/physics/mid/gravity-and-orbits_mr.html',
+    'आइसोटोप्स आणि अण्विक': 'http://localhost/simulation/marathi/physics/mid/isotopes-and-atomic-mass_mr.html',
+    'जॉन-ट्रावोल्टेज': 'http://localhost/simulation/marathi/physics/mid/john-travoltage_mr.html',
+    'चुंबक आणि कंपास': 'http://localhost/simulation/marathi/physics/mid/magnet-and-compass_mr.html',
+    'चुंबक आणि विद्युतचुंबक': 'http://localhost/simulation/marathi/physics/mid/magnets-and-electromagnets_mr.html',
+    'आण्विक आकार-तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/molecule-shapes-basics_mr.html',
+    'माझी सौर प्रणाली': 'http://localhost/simulation/marathi/physics/mid/my-solar-system_mr.html',
+    'नैसर्गिक निवड': 'http://localhost/simulation/marathi/physics/mid/natural-selection_mr.html',
+    'ओम्स नियम': 'http://localhost/simulation/marathi/physics/mid/ohms-law_mr.html',
+    'दोलक प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/mid/pendulum-lab_mr.html',
+    'pH स्केल तत्त्वे': 'http://localhost/simulation/marathi/physics/mid/ph-scale-basics_mr.html',
+    'pH स्केल': 'http://localhost/simulation/marathi/physics/mid/ph-scale_mr.html',
+    'प्लिंको प्रायिकता': 'http://localhost/simulation/marathi/physics/mid/plinko-probability_mr.html',
+    'प्रतिक्रिया, उत्पादन आणि शिल्लक': 'http://localhost/simulation/marathi/physics/mid/reactants-products-and-leftovers_mr.html',
+    'तारांमधील प्रतिकार': 'http://localhost/simulation/marathi/physics/mid/resistance-in-a-wire_mr.html',
+    'ध्वनी तरंग': 'http://localhost/simulation/marathi/physics/mid/sound-waves_mr.html',
+    'पदार्थाचे अवस्थां': 'http://localhost/simulation/marathi/physics/mid/states-of-matter-basics_mr.html',
+    'दाबाखाली': 'http://localhost/simulation/marathi/physics/mid/under-pressure_mr.html',
+    'एकक-गुणोत्तर': 'http://localhost/simulation/marathi/physics/mid/unit-rates_mr.html',
+    'तरंग हस्तक्षेप': 'http://localhost/simulation/marathi/physics/mid/wave-interference_mr.html',
+    'स्ट्रिंगवरील तरंग': 'http://localhost/simulation/marathi/physics/mid/wave-on-a-string_mr.html',
+    'तरंग परिचय': 'http://localhost/simulation/marathi/physics/mid/waves-intro_mr.html'
+      },
+      high: {
+       'अम्ल-आधार-उत्सव': 'http://localhost/simulation/marathi/physics/High/acid-base-solutions_mr.html',
+'क्षेत्र-मॉडेल-अल्जेब्र': 'http://localhost/simulation/marathi/physics/High/area-model-algebra_mr.html',
+'परमाणु-सहकार्य': 'http://localhost/simulation/marathi/physics/High/atomic-interactions_mr.html',
+'समतोल क्रिया': 'http://localhost/simulation/marathi/physics/High/balancing-act_mr.html',
+'रासायनिक समीकरणांचे संतुलन': 'http://localhost/simulation/marathi/physics/High/balancing-chemical-equations_mr.html',
+'फुगे आणि स्थिर वीज': 'http://localhost/simulation/marathi/physics/High/balloons-and-static-electricity_mr.html',
+'बिअर्स-कायदा प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/High/beers-law-lab_mr.html',
+'प्रकाशाचे-वाकणे': 'http://localhost/simulation/marathi/physics/High/bending-light_mr.html',
+'परमाणू-निर्माण करा': 'http://localhost/simulation/marathi/physics/High/build-a-molecule_mr.html',
+'परमाणू तयार करा': 'http://localhost/simulation/marathi/physics/High/build-an-atom_mr.html',
+'प्रत्यास्थ-आधारभूत सिद्धांत': 'http://localhost/simulation/marathi/physics/High/buoyancy-basics_mr.html',
+'प्रत्यास्थता': 'http://localhost/simulation/marathi/physics/High/buoyancy_mr.html',
+'संघटक-प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/High/capacitor-lab-basics_mr.html',
+'आरोप आणि क्षेत्र': 'http://localhost/simulation/marathi/physics/High/charges-and-fields_mr.html',
+'सर्किट बांधकाम किट एसी वर्च्युअल प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/High/circuit-construction-kit-ac-virtual-lab_mr.html',
+'सर्किट बांधकाम किट एसी': 'http://localhost/simulation/marathi/physics/High/circuit-construction-kit-ac_mr.html',
+'सर्किट बांधकाम किट डीसी वर्च्युअल प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/High/circuit-construction-kit-dc-virtual-lab_mr.html',
+'सर्किट बांधकाम किट डीसी': 'http://localhost/simulation/marathi/physics/High/circuit-construction-kit-dc_mr.html',
+'रंग दृष्टिकोन': 'http://localhost/simulation/marathi/physics/High/color-vision_mr.html',
+'सांद्रता': 'http://localhost/simulation/marathi/physics/High/concentration_mr.html',
+'कुलंबचा नियम': 'http://localhost/simulation/marathi/physics/High/coulombs-law_mr.html',
+'घनता': 'http://localhost/simulation/marathi/physics/High/density_mr.html',
+'प्रसारण': 'http://localhost/simulation/marathi/physics/High/diffusion_mr.html',
+'ऊर्जा स्वरूप आणि बदल': 'http://localhost/simulation/marathi/physics/High/energy-forms-and-changes_mr.html',
+'ऊर्जा स्केट पार्क तत्त्वे': 'http://localhost/simulation/marathi/physics/High/energy-skate-park-basics_mr.html',
+'ऊर्जा स्केट पार्क': 'http://localhost/simulation/marathi/physics/High/energy-skate-park_mr.html',
+'सोप्या रासायनिक सूत्रे': 'http://localhost/simulation/marathi/physics/High/expression-exchange_mr.html',
+'फॅराडेचा विद्युतचुंबकीय प्रयोग': 'http://localhost/simulation/marathi/physics/High/faradays-electromagnetic-lab_mr.html',
+'फॅराडेचा कायदा': 'http://localhost/simulation/marathi/physics/High/faradays-law_mr.html',
+'बल आणि गती तत्त्वे': 'http://localhost/simulation/marathi/physics/High/forces-and-motion-basics_mr.html',
+'अपघटन-सुस्पष्ट': 'http://localhost/simulation/marathi/physics/High/fraction-matcher_mr.html',
+'घर्षण': 'http://localhost/simulation/marathi/physics/High/friction_mr.html',
+'कार्य-निर्माता': 'http://localhost/simulation/marathi/physics/High/function-builder_mr.html',
+'गॅस गुणधर्म': 'http://localhost/simulation/marathi/physics/High/gas-properties_mr.html',
+'उत्पन्न': 'http://localhost/simulation/marathi/physics/High/generator_mr.html',
+'भौमितिक प्रकाश तत्त्वे': 'http://localhost/simulation/marathi/physics/High/geometric-optics-basics_mr.html',
+'भौमितिक प्रकाश': 'http://localhost/simulation/marathi/physics/High/geometric-optics_mr.html',
+'रेषा आलेखन': 'http://localhost/simulation/marathi/physics/High/graphing-lines_mr.html',
+'गुरुत्व आणि कक्षा': 'http://localhost/simulation/marathi/physics/High/gravity-and-orbits_mr.html',
+'गुरुत्वबल प्रयोग': 'http://localhost/simulation/marathi/physics/High/gravity-force-lab_mr.html',
+'हुकचा नियम': 'http://localhost/simulation/marathi/physics/High/hookes-law_mr.html',
+'आयसोटोप आणि परमाणु वजन': 'http://localhost/simulation/marathi/physics/High/isotopes-and-atomic-mass_mr.html',
+'जॉन ट्रॅव्होल्टेज': 'http://localhost/simulation/marathi/physics/High/john-travoltage_mr.html',
+'चुंबक आणि कंपास': 'http://localhost/simulation/marathi/physics/High/magnet-and-compass_mr.html',
+'चुंबक आणि विद्युत चुंबक': 'http://localhost/simulation/marathi/physics/High/magnets-and-electromagnets_mr.html',
+'मोलरिटी': 'http://localhost/simulation/marathi/physics/High/molarity_mr.html',
+'आण्विक आकृत्या तत्त्वे': 'http://localhost/simulation/marathi/physics/High/molecule-shapes-basics_mr.html',
+'आण्विक आकृत्या': 'http://localhost/simulation/marathi/physics/High/molecule-shapes_mr.html',
+'माझी सौर प्रणाली': 'http://localhost/simulation/marathi/physics/High/my-solar-system_mr.html',
+'नैसर्गिक निवड': 'http://localhost/simulation/marathi/physics/High/natural-selection_mr.html',
+'ओहमचा नियम': 'http://localhost/simulation/marathi/physics/High/ohms-law_mr.html',
+'पेंडुलम प्रयोगशाळा': 'http://localhost/simulation/marathi/physics/High/pendulum-lab_mr.html',
+'पीएच प्रमाण': 'http://localhost/simulation/marathi/physics/High/ph-scale_mr.html',
+'प्लिंको संभाव्यता': 'http://localhost/simulation/marathi/physics/High/plinko-probability_mr.html',
+'उत्प्रेरक-क्रियां': 'http://localhost/simulation/marathi/physics/High/reactants-products-and-leftovers_mr.html',
+'तारातील प्रतिकार': 'http://localhost/simulation/marathi/physics/High/resistance-in-a-wire_mr.html',
+'रदरफोर्ड स्कॅटरिंग': 'http://localhost/simulation/marathi/physics/High/rutherford-scattering_mr.html',
+'ध्वनी लाटा': 'http://localhost/simulation/marathi/physics/High/sound-waves_mr.html',
+'द्रव्य-स्थिती तत्त्वे': 'http://localhost/simulation/marathi/physics/High/states-of-matter-basics_mr.html',
+'द्रव्याच्या स्थिती': 'http://localhost/simulation/marathi/physics/High/states-of-matter_mr.html',
+'त्रिकोणमितीय सफर': 'http://localhost/simulation/marathi/physics/High/trig-tour_mr.html',
+'दबावाखाली': 'http://localhost/simulation/marathi/physics/High/under-pressure_mr.html',
+'युनिट दर': 'http://localhost/simulation/marathi/physics/High/unit-rates_mr.html',
+'वेक्टर संयोग': 'http://localhost/simulation/marathi/physics/High/vector-addition_mr.html',
+'लाट सामंजस्य': 'http://localhost/simulation/marathi/physics/High/wave-interference_mr.html',
+'धाग्यावरील लाटा': 'http://localhost/simulation/marathi/physics/High/wave-on-a-string_mr.html',
+
+      },
+    },
+    Chemistry: {
+      elementary: {
+        'पदार्थाच्या अवस्था': 'http://localhost/simulation/marathi/Chemistry/elementary/states-of-matter-basics_mr.html',
+'वायू परिचय': 'http://localhost/simulation/marathi/Chemistry/elementary/gases-intro_mr.html',
+'ऊर्जेचे प्रकार आणि बदल': 'http://localhost/simulation/marathi/Chemistry/elementary/energy-forms-and-changes_mr.html',
+'घनता': 'http://localhost/simulation/marathi/Chemistry/elementary/density_mr.html',
+'सघनता': 'http://localhost/simulation/marathi/Chemistry/elementary/concentration_mr.html',
+'फुगे आणि स्थिर वीज': 'http://localhost/simulation/marathi/Chemistry/elementary/balloons-and-static-electricity_mr.html',
+      },
+      middle: {
+        'स्ट्रिंगवरील तरंग': 'http://localhost/simulation/marathi/Chemistry/mid/wave-on-a-string_mr.html',
+    'पदार्थाची अवस्था - मूलभूत': 'http://localhost/simulation/marathi/Chemistry/mid/states-of-matter-basics_mr.html',
+    'प्रतिक्रियाकार, उत्पादने आणि शिल्लक': 'http://localhost/simulation/marathi/Chemistry/mid/reactants-products-and-leftovers_mr.html',
+    'पीएच स्केल': 'http://localhost/simulation/marathi/Chemistry/mid/ph-scale_mr.html',
+    'पीएच स्केल - मूलभूत': 'http://localhost/simulation/marathi/Chemistry/mid/ph-scale-basics_mr.html',
+    'आण्विक आकार - मूलभूत': 'http://localhost/simulation/marathi/Chemistry/mid/molecule-shapes-basics_mr.html',
+    'आइसोटोप्स आणि अणु द्रव्य': 'http://localhost/simulation/marathi/Chemistry/mid/isotopes-and-atomic-mass_mr.html',
+    'वायूंची ओळख': 'http://localhost/simulation/marathi/Chemistry/mid/gases-intro_mr.html',
+    'उर्जा स्वरूपे आणि बदल': 'http://localhost/simulation/marathi/Chemistry/mid/energy-forms-and-changes_mr.html',
+    'प्रसर (डिफ्युजन)': 'http://localhost/simulation/marathi/Chemistry/mid/diffusion_mr.html',
+    'घनता': 'http://localhost/simulation/marathi/Chemistry/mid/density_mr.html',
+    'एकाग्रता': 'http://localhost/simulation/marathi/Chemistry/mid/concentration_mr.html',
+    'अणू बनवा': 'http://localhost/simulation/marathi/Chemistry/mid/build-an-atom_mr.html',
+    'रेणू तयार करा': 'http://localhost/simulation/marathi/Chemistry/mid/build-a-molecule_mr.html',
+    'फुगे आणि स्थिर विद्युत': 'http://localhost/simulation/marathi/Chemistry/mid/balloons-and-static-electricity_mr.html',
+    'रासायनिक समीकरणांचे संतुलन': 'http://localhost/simulation/marathi/Chemistry/mid/balancing-chemical-equations_mr.html'
+      },
+      high: {
+        'अम्ल-आधार-संयोजन': 'http://localhost/simulation/marathi/Chemistry/high/acid-base-solutions_mr.html',
+'आणविक-परस्परसंबंध': 'http://localhost/simulation/marathi/Chemistry/high/atomic-interactions_mr.html',
+'रासायनिक समिकरणांचा समतुल्य': 'http://localhost/simulation/marathi/Chemistry/high/balancing-chemical-equations_mr.html',
+'गुब्बारे आणि स्थिर विद्युत': 'http://localhost/simulation/marathi/Chemistry/high/balloons-and-static-electricity_mr.html',
+'बीअरचे नियम प्रयोगशाळा': 'http://localhost/simulation/marathi/Chemistry/high/beers-law-lab_mr.html',
+'अणू तयार करा': 'http://localhost/simulation/marathi/Chemistry/high/build-a-molecule_mr.html',
+'अणू तयार करा': 'http://localhost/simulation/marathi/Chemistry/high/build-an-atom_mr.html',
+'संकेंद्रण': 'http://localhost/simulation/marathi/Chemistry/high/concentration_mr.html',
+'कूलॉम्सचा कायदा': 'http://localhost/simulation/marathi/Chemistry/high/coulombs-law_mr.html',
+'घनता': 'http://localhost/simulation/marathi/Chemistry/high/density_mr.html',
+'प्रसरण': 'http://localhost/simulation/marathi/Chemistry/high/diffusion_mr.html',
+'ऊर्जा-रूप आणि बदल': 'http://localhost/simulation/marathi/Chemistry/high/energy-forms-and-changes_mr.html',
+'गॅस गुणधर्म': 'http://localhost/simulation/marathi/Chemistry/high/gas-properties_mr.html',
+'आयसोप्स आणि आणविक वजन': 'http://localhost/simulation/marathi/Chemistry/high/isotopes-and-atomic-mass_mr.html',
+'मोलरता': 'http://localhost/simulation/marathi/Chemistry/high/molarity_mr.html',
+'अणू आकाराचे मूलभूत': 'http://localhost/simulation/marathi/Chemistry/high/molecule-shapes-basics_mr.html',
+'अणू आकार': 'http://localhost/simulation/marathi/Chemistry/high/molecule-shapes_mr.html',
+'ph-स्केल': 'http://localhost/simulation/marathi/Chemistry/high/ph-scale_mr.html',
+'प्रतिक्रिया-उत्पादक-आणि-वेस्ट': 'http://localhost/simulation/marathi/Chemistry/high/reactants-products-and-leftovers_mr.html',
+'रutherford प्रसारण': 'http://localhost/simulation/marathi/Chemistry/high/rutherford-scattering_mr.html',
+'पदार्थाच्या स्थितीचे मूलभूत': 'http://localhost/simulation/marathi/Chemistry/high/states-of-matter-basics_mr.html',
+'पदार्थाच्या स्थिती': 'http://localhost/simulation/marathi/Chemistry/high/states-of-matter_mr.html',
+'धाग्यावर लाटा': 'http://localhost/simulation/marathi/Chemistry/high/wave-on-a-string_mr.html'
+
+      },
+    },
+    Biology: {
+      elementary: {
+        'घनता': 'http://localhost/simulation/marathi/Biology/elementary/color-vision_mr.html',
+'नैसर्गिक निवड': 'http://localhost/simulation/marathi/Biology/elementary/density_mr.html',
+'रंग दृष्टि': 'http://localhost/simulation/marathi/Biology/elementary/natural-selection_mr.html',
+      },
+      middle: {
+        'घनता': 'http://localhost/simulation/marathi/Biology/mid/density_mr.html',
+    'नैसर्गिक निवड': 'http://localhost/simulation/marathi/Biology/mid/natural-selection_mr.html',
+    'रंग दृष्टी': 'http://localhost/simulation/marathi/Biology/mid/color-vision_mr.html',
+    'पीएच स्केल': 'http://localhost/simulation/marathi/Biology/mid/ph-scale_mr.html'
+      },
+      high: {
+        'घनता': 'http://localhost/simulation/marathi/Biology/high/density_mr.html',
+'नैतिक निवड': 'http://localhost/simulation/marathi/Biology/high/natural-selection_mr.html',
+'रंग दृष्टी': 'http://localhost/simulation/marathi/Biology/high/color-vision_mr.html',
+'ph-स्केल': 'http://localhost/simulation/marathi/Biology/high/ph-scale_mr.html'
+
+      },
+    },
+    Math: {
+      elementary: {
+       'एरिया बिल्डर': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/area-builder_mr.html',
+'एरिया मॉडेल दशमलव': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/area-model-decimals_mr.html',
+'एरिया मॉडेल परिचय': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/area-model-introduction_mr.html',
+'एरिया मॉडेल गुणाकार': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/area-model-multiplication_mr.html',
+'गणित': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/arithmetic_mr.html',
+'संतुलन क्रिया': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/balancing-act_mr.html',
+'फ्रॅक्शन तयार करा': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/build-a-fraction_mr.html',
+'अभिव्यक्ती बदल': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/expression-exchange_mr.html',
+'फ्रॅक्शन मॅच': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/fraction-matcher_mr.html',
+'फ्रॅक्शन समत्त्व': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/fractions-equality_mr.html',
+'फ्रॅक्शन परिचय': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/fractions-intro_mr.html',
+'फ्रॅक्शन मिक्स्ड नंबर': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/fractions-mixed-numbers_mr.html',
+'फंक्शन बिल्डर बेसिक्स': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/function-builder-basics_mr.html',
+'दहा तयार करा': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/make-a-ten_mr.html',
+'पेंडुलम प्रयोगशाळा': 'http://localhost/simulation/marathi/math%20&%20Statistics/elementary/pendulum-lab_mr.html',
+      },
+      middle: {
+        'क्षेत्र-निर्माता': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/area-builder_mr.html',
+    'क्षेत्र-मॉडेल-बियेजगणित': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/area-model-algebra_mr.html',
+    'क्षेत्र-मॉडेल-दशांश': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/area-model-decimals_mr.html',
+    'क्षेत्र-मॉडेल-गुणाकार': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/area-model-multiplication_mr.html',
+    'अंकगणित': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/arithmetic_mr.html',
+    'संतुलन-अभिनय': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/balancing-act_mr.html',
+    'भिन्न-बांधा': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/expression-exchange_mr.html',
+    'अभिव्यक्ती-विनिमय': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/pendulum-lab_mr.html',
+    'भिन्न-सामन्यकरण': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/fraction-matcher_mr.html',
+    'भिन्न-समता': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/fractions-equality_mr.html',
+    'भिन्न-परिचय': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/fractions-intro_mr.html',
+    'कार्य-बांधणी': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/function-builder_mr.html',
+    'मिश्र-भिन्न': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/fractions-mixed-numbers_mr.html',
+    'कार्य-बांधणी-तत्त्वे': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/function-builder-basics_mr.html',
+    'रेषा-रेखांकन': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/graphing-lines_mr.html',
+    'ओम्स-नियम': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/ohms-law_mr.html',
+    'दोलक-प्रयोगशाळा': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/pendulum-lab_mr.html',
+    'प्लिंको-प्रायिकता': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/plinko-probability_mr.html',
+    'तारांमधील प्रतिकार': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/resistance-in-a-wire_mr.html',
+    'एकक-गुणोत्तर': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/unit-rates_mr.html',
+    'स्ट्रिंगवरील तरंग': 'http://localhost/simulation/marathi/math%20&%20Statistics/mid/wave-on-a-string_mr.html'
+      },
+      high: {
+       'क्षेत्र-मॉडेल-अल्जेब्र': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/area-model-algebra_mr.html',
+'समतोल क्रिया': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/balancing-act_mr.html',
+'व्यक्तिमत्व-आदान-प्रदान': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/expression-exchange_mr.html',
+'भाग-मॅचिंग': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/fraction-matcher_mr.html',
+'कार्य-निर्माता': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/function-builder_mr.html',
+'रेषा चित्रांकन': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/graphing-lines_mr.html',
+'ओहमचा कायदा': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/ohms-law_mr.html',
+'पेंडुलम प्रयोगशाळा': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/pendulum-lab_mr.html',
+'प्लिंको संभाव्यता': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/plinko-probability_mr.html',
+'तारातील प्रतिकार': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/resistance-in-a-wire_mr.html',
+'त्रिकोणमितीय सहल': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/trig-tour_mr.html',
+'एकक दर': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/unit-rates_mr.html',
+'वेक्टर समावेश': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/vector-addition_mr.html',
+'धाग्यावर लाटा': 'http://localhost/simulation/marathi/math%20&%20Statistics/high/wave-on-a-string_mr.html'
+      },
+    },
+    Earth: {
+      elementary: {
+       'लहरी परिचय': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/waves-intro_mr.html',
+'लहरी हस्तक्षेप': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/wave-interference_mr.html',
+'माझा सौरमालिका': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/my-solar-system_mr.html',
+'गुरुत्व आणि कक्षीय गती': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/gravity-and-orbits_mr.html',
+'वायू परिचय': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/gases-intro_mr.html',
+'घनता': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/density_mr.html',
+'फुगे आणि स्थिर वीज': 'http://localhost/simulation/marathi/earth%20&%20Space/elementary/balloons-and-static-electricity_mr.html'
+      },
+      middle: {
+        'तरंगांची ओळख': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/waves-intro_mr.html',
+    'स्ट्रिंगवरील तरंग': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/wave-on-a-string_mr.html',
+    'तरंग हस्तक्षेप': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/wave-interference_mr.html',
+    'दाबाखाली': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/under-pressure_mr.html',
+    'पीएच स्केल': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/ph-scale_mr.html',
+    'माझी सौर प्रणाली': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/my-solar-system_mr.html',
+    'चुंबक आणि कंपास': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/magnet-and-compass_mr.html',
+    'गुरुत्वाकर्षण आणि कक्षा': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/gravity-and-orbits_mr.html',
+    'वायूंची ओळख': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/gases-intro_mr.html',
+    'प्रसर (डिफ्युजन)': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/diffusion_mr.html',
+    'घनता': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/density_mr.html',
+    'फुगे आणि स्थिर विद्युत': 'http://localhost/simulation/marathi/earth%20&%20Space/mid/balloons-and-static-electricity_mr.html'
+      },
+      high: {
+        'धाग्यावर लाटा': 'http://localhost/simulation/marathi/earth%20&%20Space/high/wave-on-a-string_mr.html',
+'लाटांची अडचण': 'http://localhost/simulation/marathi/earth%20&%20Space/high/wave-interference_mr.html',
+'दाबाखाली': 'http://localhost/simulation/marathi/earth%20&%20Space/high/under-pressure_mr.html',
+'पीएच स्केल': 'http://localhost/simulation/marathi/earth%20&%20Space/high/ph-scale_mr.html',
+'माझं सौरमाले': 'http://localhost/simulation/marathi/earth%20&%20Space/high/my-solar-system_mr.html',
+'चुंबक आणि समज': 'http://localhost/simulation/marathi/earth%20&%20Space/high/magnet-and-compass_mr.html',
+'ग्रहबल प्रयोगशाळा मूलभूत': 'http://localhost/simulation/marathi/earth%20&%20Space/high/gravity-force-lab-basics_en.html',
+'ग्रहबल आणि कक्ष': 'http://localhost/simulation/marathi/earth%20&%20Space/high/gravity-and-orbits_en.html',
+'गॅस गुणधर्म': 'http://localhost/simulation/marathi/earth%20&%20Space/high/gas-properties_mr.html',
+'प्रसरण': 'http://localhost/simulation/marathi/earth%20&%20Space/high/diffusion_mr.html',
+'घनता': 'http://localhost/simulation/marathi/earth%20&%20Space/high/density_en.html',
+'गुब्बारे आणि स्थिर विद्युत': 'http://localhost/simulation/marathi/earth%20&%20Space/high/balloons-and-static-electricity_en.html'
+      },
+    },
+  },
+};
+
+           
+        // Update the page title dynamically
+        document.getElementById('levelTitle').textContent = `${subject} - ${level.charAt(0).toUpperCase() + level.slice(1)} Level`;
+
+        // Add topic cards dynamically
+        const topicDiv = document.getElementById('topicDiv');
+        const selectedLevelSimulations = simulationLinks[language]?.[subject]?.[level];
+
+        if (selectedLevelSimulations && Object.keys(selectedLevelSimulations).length > 0) {
+            for (const [key, link] of Object.entries(selectedLevelSimulations)) {
+                const topicCard = document.createElement('div');
+                topicCard.className = 'topic-card';
+
+                // Adding title to the card
+                const topicTitle = document.createElement('h3');
+                topicTitle.textContent = `${key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}`; // Format text
+
+                // Creating a button for the card
+                const startButton = document.createElement('a');
+                startButton.className = 'start-btn';
+                startButton.href = link;
+                startButton.textContent = 'Start Simulation';
+
+                topicCard.appendChild(topicTitle);
+                topicCard.appendChild(startButton);
+
+                topicDiv.appendChild(topicCard);
+            }
+        } else {
+            const noContentMessage = document.createElement('div');
+            noContentMessage.textContent = "No simulations available for the selected level.";
+            topicDiv.appendChild(noContentMessage);
+        }
+    </script>
+</body>
+</html>
