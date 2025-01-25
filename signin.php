@@ -35,13 +35,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 // Incorrect password
                 $_SESSION['error_message'] = 'Incorrect password';
-                header("Location: sign-in.html");
+                header("Location: index.html");
                 exit();
             }
         } else {
             // No user found with the provided email
             $_SESSION['error_message'] = 'No user found with this email';
-            header("Location: sign-in.html");
+            header("Location: index.html");
             exit();
         }
     } else {
@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else {
     // If not a POST request, redirect back to sign-in
-    header("Location: sign-in.html");
+    header("Location: index.html");
     exit();
 }
 
